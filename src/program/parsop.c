@@ -1,28 +1,30 @@
 #include "medit.h"
 #include "extern.h"
 #include "sproto.h"
+#include <string.h>
 
 extern ubyte      stereoMode;
 
 
-int saveMeditFile(char *file,pScene sc) {
+int saveMeditFile(char *file, pScene sc) {
   FILE      *out;
-  pMaterial  pm;
+  Material  *pm;
   time_t     timeptr;
   int        i,k,m;
-  char      *ptr,data[128];
+  char       data[128];
 
   strcpy(data,file);
-  ptr = (char *)strstr(data,".mesh");
-  if ( ptr )  *ptr = '\0';
-  if ( !strstr(data,".medit") )
-    strcat(data,".medit");
 
-  fprintf(stdout,"  Writing %s\n",data);
-  out = fopen(data,"w");
+  char* ptr = (char *)strstr(data,".mesh");
+  if ( ptr )  *ptr = '\0';
+  if ( !strstr(data, ".medit") )
+    strcat(data, ".medit");
+
+  fprintf(stderr, "  Writing %s\n",data);
+  out = fopen(data, "w");
   if ( !out ) {
-    fprintf(stdout,"  ## Unnable to write file\n");
-    return(0);
+    fprintf(stderr, "  ## Unnable to write file\n");
+    return 0;
   }
 
   /* create standard parameter file */
@@ -102,7 +104,7 @@ int saveMeditFile(char *file,pScene sc) {
 }
 
 /* setup default values */
-void iniopt(pScene sc,pMesh mesh) {
+void iniopt(Scene *sc, Mesh *mesh) {
   GLfloat  sunpos[4]   = { 0.0, 0.0, 1.0, 1.0};
   int      k;
 
@@ -153,8 +155,8 @@ void iniopt(pScene sc,pMesh mesh) {
 }
 
 
-/* parse the program options */
-int parsop(pScene sc,pMesh mesh) {
+/* parse the config program options */
+int parsop(Scene *sc, Mesh *mesh) {
   FILE      *in;
   pMaterial  pm;
   double     dd;
@@ -163,19 +165,19 @@ int parsop(pScene sc,pMesh mesh) {
   char      *ptr,ub,data[128],key[256],buf[256],pscol[32];
   
   /* check if user-specified parameters */
-  iniopt(sc,mesh);
+  iniopt(sc, mesh);
 
-  strcpy(data,mesh->name);
+  strcpy(data, mesh->name);
   ptr = (char *)strstr(data,".mesh");
   if ( ptr )  *ptr = '\0';
   in = 0;
   if ( !strstr(data,".medit") ) {
     strcat(data,".medit");
-    in = fopen(data,"r"); 
+    in = fopen(data, "r"); 
   }
   if ( !in ) {
     sprintf(data,"./%s",DEFAULT_FILE);
-    in = fopen(data,"r");
+    in = fopen(data, "r");
     if ( !in ) {
       fprintf(stdout,"   Loading default options\n");
       sc->par.nbmat = MAX_MATERIAL;
@@ -183,6 +185,7 @@ int parsop(pScene sc,pMesh mesh) {
       return(1);
     }
   }
+
   if ( !quiet )  fprintf(stdout,"   Reading %s\n",data);
   
   m = n = 0;

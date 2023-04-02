@@ -18,7 +18,7 @@ static int ct[4][3] = { {0,1,2}, {0,3,1}, {1,3,2}, {0,2,3} };
 extern int refpick;
 
 
-static void drawTria(pScene sc,pMesh mesh,int k) {
+static void drawTria(pScene sc,Mesh*mesh,int k) {
   pMaterial    pm;
   pTriangle    pt;
   pPoint       p0,p1,p2;
@@ -82,7 +82,7 @@ static void drawTria(pScene sc,pMesh mesh,int k) {
 }
 
 
-static void drawQuad(pScene sc,pMesh mesh,int k) {
+static void drawQuad(pScene sc,Mesh*mesh,int k) {
   pMaterial  pm;
   pQuad      pq;
   pPoint     p0,p1,p2,p3;
@@ -153,7 +153,7 @@ static void drawQuad(pScene sc,pMesh mesh,int k) {
 }
 
 
-static void drawTets(pScene sc,pMesh mesh,int k) {
+static void drawTets(pScene sc,Mesh*mesh,int k) {
   pMaterial  pm;
   pTetra     pt;
   pPoint     p0,p1,p2,p3;
@@ -227,7 +227,7 @@ static void drawTets(pScene sc,pMesh mesh,int k) {
 }
 
 
-static void drawHexa(pScene sc,pMesh mesh,int k) {
+static void drawHexa(pScene sc,Mesh*mesh,int k) {
   pMaterial  pm;
   pHexa      ph;
   pPoint     p0,p1,p2,p3;
@@ -296,7 +296,7 @@ static void drawHexa(pScene sc,pMesh mesh,int k) {
 }
 
 
-static void drawPoint(pScene sc,pMesh mesh,int k) {
+static void drawPoint(pScene sc,Mesh*mesh,int k) {
   pPoint      pt;
 
   pt = &mesh->point[k];
@@ -319,7 +319,7 @@ static double norm(float *m) {
 }
 
 
-static void infoData(pScene sc,pMesh mesh,int k,int typel) {
+static void infoData(pScene sc,Mesh*mesh,int k,int typel) {
   pSolution  ps;
 
   if ( !mesh->nbb )  return;
@@ -346,7 +346,7 @@ static void infoData(pScene sc,pMesh mesh,int k,int typel) {
 }
 
 
-static void infoEntity(pScene sc,pMesh mesh,int k,int type) {
+static void infoEntity(pScene sc,Mesh*mesh,int k,int type) {
   pMaterial  pm;
   pTriangle  pt;
   pTetra     ptt;
@@ -422,7 +422,7 @@ static void infoEntity(pScene sc,pMesh mesh,int k,int type) {
 }
 
 
-static int getColorRange(Color *c,pMesh mesh) {
+static int getColorRange(Color *c,Mesh*mesh) {
   GLubyte    mask;
   GLint      rBits,gBits,bBits,aBits;
   long       nbmax;
@@ -476,7 +476,7 @@ static int getColorRange(Color *c,pMesh mesh) {
 }
 
 
-static void displayPoint(pScene sc,pMesh mesh,Color *c) {
+static void displayPoint(pScene sc,Mesh*mesh,Color *c) {
   pPoint       ppt;
   unsigned int k,kk;
 
@@ -501,7 +501,7 @@ static void displayPoint(pScene sc,pMesh mesh,Color *c) {
 }
 
 
-static void displayTria(pScene sc,pMesh mesh,Color *c) {
+static void displayTria(pScene sc,Mesh*mesh,Color *c) {
   pTriangle    pt;
   pPoint       p0,p1,p2;
   pMaterial    pm;
@@ -537,7 +537,7 @@ static void displayTria(pScene sc,pMesh mesh,Color *c) {
   glEnd();
 }
 
-static void displayQuad(pScene sc,pMesh mesh,Color *c) {
+static void displayQuad(pScene sc,Mesh*mesh,Color *c) {
   pQuad        pq;
   pPoint       p0,p1,p2,p3;
   pMaterial    pm;
@@ -578,7 +578,7 @@ static void displayQuad(pScene sc,pMesh mesh,Color *c) {
   glEnd();
 }
 
-static void displayTets(pScene sc,pMesh mesh,Color *c) {
+static void displayTets(pScene sc,Mesh*mesh,Color *c) {
   pTetra       ptt;
   pPoint       p0,p1,p2;
   pMaterial    pm;
@@ -623,7 +623,7 @@ static void displayTets(pScene sc,pMesh mesh,Color *c) {
   glEnd();
 }
 
-static void displayHexa(pScene sc,pMesh mesh,Color *c) {
+static void displayHexa(pScene sc,Mesh*mesh,Color *c) {
   pHexa        ph;
   pPoint       p0,p1,p2,p3;
   pMaterial    pm;
@@ -671,7 +671,7 @@ static void displayHexa(pScene sc,pMesh mesh,Color *c) {
 }
 
 
-void drawModelSimple(pScene sc,pMesh mesh,Color *c) {
+void drawModelSimple(pScene sc,Mesh*mesh,Color *c) {
 
   glDisable(GL_BLEND);
   glDisable(GL_LIGHTING);
@@ -706,7 +706,7 @@ void drawModelSimple(pScene sc,pMesh mesh,Color *c) {
 }
 
 
-static int closestPoint(pScene sc,pMesh mesh,int x,int y,int item,int type) {
+static int closestPoint(pScene sc,Mesh*mesh,int x,int y,int item,int type) {
   pTriangle   pt;
   pQuad       pq;
   pTetra      pte;
@@ -791,7 +791,7 @@ static int closestPoint(pScene sc,pMesh mesh,int x,int y,int item,int type) {
 
 
 GLuint pickingScene(pScene sc,int x,int y,int ident) {
-  pMesh         mesh;
+  Mesh*        mesh;
   pClip         clip;
   GLint         viewport[4];
   GLubyte       pixel[4];
@@ -916,7 +916,7 @@ GLuint pickingScene(pScene sc,int x,int y,int ident) {
 }
 
 
-GLuint pickItem(pMesh mesh,pScene sc,int numit) {
+GLuint pickItem(Mesh*mesh,pScene sc,int numit) {
   pMaterial  pm;
   pPoint     ppt;
   GLuint     dlist;

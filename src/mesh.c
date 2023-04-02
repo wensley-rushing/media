@@ -1,6 +1,8 @@
 #include "medit.h"
+#include "hash.h"
 #include "extern.h"
 #include "sproto.h"
+#include "formats/formats.h"
 
 #define FLOAT_MAX  1.e20
 ubyte   dosurf;
@@ -26,7 +28,7 @@ double volTet(double *c1,double *c2,double *c3,double *c4) {
 
 
 /* dump mesh info */
-void meshInfo(pMesh mesh) {
+void meshInfo(Mesh *mesh) {
   fprintf(stdout,"    Vertices   %8d",mesh->np);
   if ( mesh->nc ) fprintf(stdout,"  Corners  %d",mesh->nc);
   if ( mesh->nr ) fprintf(stdout,"  Required %d",mesh->nr);
@@ -50,10 +52,10 @@ void meshInfo(pMesh mesh) {
 }
 
 
-void meshCoord(pMesh mesh,int displ) {
-  pTetra     pt1;
-  pPoint     ppt;
-  pSolution  ps;
+void meshCoord(Mesh *mesh,int displ) {
+  Tetra     *pt1;
+  Point     *ppt;
+  Solution  *ps;
   double    *c1,*c2,*c3,*c4,mul,vold,volf;
   int        k;
 
@@ -63,46 +65,46 @@ void meshCoord(pMesh mesh,int displ) {
   if ( mesh->dim == 2 ) {   
    for (k=1; k<=mesh->np; k++) {
       ppt = &mesh->point[k];
-	  ps  = &mesh->sol[k];
-	  ppt->c[0] = mesh->xtra + ppt->c[0] + mul*ps->m[0];
-	  ppt->c[1] = mesh->ytra + ppt->c[1] + mul*ps->m[1];
+    ps  = &mesh->sol[k];
+    ppt->c[0] = mesh->xtra + ppt->c[0] + mul*ps->m[0];
+    ppt->c[1] = mesh->ytra + ppt->c[1] + mul*ps->m[1];
     }
   }
   else {
-	  vold = 0.0;
-	  for (k=1; k<=mesh->ntet; k++) {
-	    pt1 = &mesh->tetra[k];
-	    if ( !pt1->v[0] )  continue;
-	    c1 = &mesh->point[pt1->v[0]].c[0];
-	    c2 = &mesh->point[pt1->v[1]].c[0];
-	    c3 = &mesh->point[pt1->v[2]].c[0];
-	    c4 = &mesh->point[pt1->v[3]].c[0];
-	    vold += volTet(c1,c2,c3,c4);
-	  }
+    vold = 0.0;
+    for (k=1; k<=mesh->ntet; k++) {
+      pt1 = &mesh->tetra[k];
+      if ( !pt1->v[0] )  continue;
+      c1 = &mesh->point[pt1->v[0]].c[0];
+      c2 = &mesh->point[pt1->v[1]].c[0];
+      c3 = &mesh->point[pt1->v[2]].c[0];
+      c4 = &mesh->point[pt1->v[3]].c[0];
+      vold += volTet(c1,c2,c3,c4);
+    }
     for (k=1; k<=mesh->np; k++) {
       ppt = &mesh->point[k];
-	    ps  = &mesh->sol[k];
-	    ppt->c[0] = mesh->xtra + ppt->c[0] + mul*ps->m[0];
-	    ppt->c[1] = mesh->ytra + ppt->c[1] + mul*ps->m[1];
-	    ppt->c[2] = mesh->ztra + ppt->c[2] + mul*ps->m[2];
+      ps  = &mesh->sol[k];
+      ppt->c[0] = mesh->xtra + ppt->c[0] + mul*ps->m[0];
+      ppt->c[1] = mesh->ytra + ppt->c[1] + mul*ps->m[1];
+      ppt->c[2] = mesh->ztra + ppt->c[2] + mul*ps->m[2];
     }
-	  volf = 0.0;
-	  for (k=1; k<=mesh->ntet; k++) {
-	    pt1 = &mesh->tetra[k];
-	    if ( !pt1->v[0] )  continue;
-	    c1 = &mesh->point[pt1->v[0]].c[0];
-	    c2 = &mesh->point[pt1->v[1]].c[0];
-	    c3 = &mesh->point[pt1->v[2]].c[0];
-	    c4 = &mesh->point[pt1->v[3]].c[0];
-	    volf += volTet(c1,c2,c3,c4);
-	  }
-	  fprintf(stdout,"  Volume: initial %E    final %E\n",vold,volf);
+    volf = 0.0;
+    for (k=1; k<=mesh->ntet; k++) {
+      pt1 = &mesh->tetra[k];
+      if ( !pt1->v[0] )  continue;
+      c1 = &mesh->point[pt1->v[0]].c[0];
+      c2 = &mesh->point[pt1->v[1]].c[0];
+      c3 = &mesh->point[pt1->v[2]].c[0];
+      c4 = &mesh->point[pt1->v[3]].c[0];
+      volf += volTet(c1,c2,c3,c4);
+    }
+    fprintf(stdout,"  Volume: initial %E    final %E\n",vold,volf);
   }
 }
 
 
-void meshBox(pMesh mesh,int bb) {
-  pPoint     ppt;
+void meshBox(Mesh* mesh,int bb) {
+  Point     *ppt;
   int        k;
 
   /* default */
@@ -137,16 +139,16 @@ void meshBox(pMesh mesh,int bb) {
 }
 
 
-int meshSurf(pMesh mesh) {
-  pTetra     ptt,pt2;
-  pHexa      ph;
-  pTriangle  pt;
-  pQuad      pq;
+int meshSurf(Mesh *mesh) {
+  Tetra     *ptt,*pt2;
+  Hexa      *ph;
+  Triangle  *pt;
+  Quad      *pq;
   int       *adj,i,k,iadr;
   ubyte      i1,i2,i3;
   static int idirt[7] = {0,1,2,3,0,1,2};
   static int ch[6][4] = { {0,1,2,3}, {4,5,6,7}, {0,1,5,4}, 
-			  {1,2,6,5}, {2,3,7,6}, {0,3,7,4} };
+        {1,2,6,5}, {2,3,7,6}, {0,3,7,4} };
 
   if ( !dosurf )  return(1);
 
@@ -161,10 +163,10 @@ int meshSurf(pMesh mesh) {
       adj  = &mesh->adja[iadr];
       for (i=0; i<4; i++)
         if ( !adj[i] ) ++mesh->nt;
-	      else {
-	        pt2 = &mesh->tetra[adj[i]];
-	        if ( ptt->ref != pt2->ref && k < adj[i] ) ++mesh->nt;
-	      }
+        else {
+          pt2 = &mesh->tetra[adj[i]];
+          if ( ptt->ref != pt2->ref && k < adj[i] ) ++mesh->nt;
+        }
     }
 
     /* memory alloc */
@@ -191,11 +193,11 @@ int meshSurf(pMesh mesh) {
           pt->v[0] = ptt->v[i1];
           pt->v[1] = ptt->v[i2];
           pt->v[2] = ptt->v[i3];
-	      pt->ref  = 0;
+        pt->ref  = 0;
         }
-	    else {
-	      pt2 = &mesh->tetra[adj[i]];
-	      if ( (ptt->ref != pt2->ref) && (k < adj[i]) ) {
+      else {
+        pt2 = &mesh->tetra[adj[i]];
+        if ( (ptt->ref != pt2->ref) && (k < adj[i]) ) {
             pt = &mesh->tria[++mesh->nt];
             i1 = idirt[i+1];
             i2 = idirt[i+2];
@@ -203,10 +205,10 @@ int meshSurf(pMesh mesh) {
             pt->v[0] = ptt->v[i1];
             pt->v[1] = ptt->v[i2];
             pt->v[2] = ptt->v[i3];
-	        pt->ref  = max(ptt->ref,pt2->ref);
-	  } 
-	}
-      }	
+          pt->ref  = max(ptt->ref,pt2->ref);
+    } 
+  }
+      }  
     } 
   }
 
@@ -257,14 +259,14 @@ int meshSurf(pMesh mesh) {
   return(1);
 }
 
-void meshRef(pScene sc,pMesh mesh) {
-  pMaterial  pm;
-  pTriangle  pt;
-  pQuad      pq;
-  pTetra     pte;
-  pHexa      ph;
-  pPoint     ppt;
-  int       *old,i,k,m,nmat;
+void meshRef(Scene *sc, Mesh *mesh) {
+  Material  *pm;
+  Triangle  *pt;
+  Quad      *pq;
+  Tetra     *pte;
+  Hexa      *ph;
+  Point     *ppt;
+  int       *old,nmat;
 
   /* default */
   if ( ddebug ) printf("    assign %d references\n",sc->par.nbmat-1);
@@ -274,7 +276,7 @@ void meshRef(pScene sc,pMesh mesh) {
   old = (int*)calloc(sc->par.nbmat+1,sizeof(int));
   if ( !old )  exit(2);
 
-  for (m=0; m<sc->par.nbmat; m++) {
+  for (int m=0; m < sc->par.nbmat; m++) {
     pm = &sc->material[m];
     pm->ext[0] = mesh->xmax-mesh->xtra;
     pm->ext[1] = mesh->ymax-mesh->ytra;
@@ -284,15 +286,15 @@ void meshRef(pScene sc,pMesh mesh) {
     pm->ext[5] = mesh->zmin-mesh->ztra;
   }
 
-  for (k=mesh->nt; k>0; k--) {
+  for (int k=mesh->nt; k>0; k--) {
     pt   = &mesh->tria[k];
-	if ( !pt->v[0] )  continue;
+    if ( !pt->v[0] )  continue;
     nmat = matRef(sc,pt->ref);
     /*nmat = !pt->ref ? DEFAULT_MAT : 1+(pt->ref-1)%(sc->par.nbmat-1);*/
     pt->nxt   = old[nmat];
     old[nmat] = k;
     pm = &sc->material[nmat];
-    for (i=0; i<3; i++) {
+    for (int i=0; i<3; i++) {
       ppt = &mesh->point[pt->v[i]];
       pm->ext[0] = min(pm->ext[0],ppt->c[0]);
       pm->ext[1] = min(pm->ext[1],ppt->c[1]);
@@ -303,21 +305,21 @@ void meshRef(pScene sc,pMesh mesh) {
     }
   }
 
-  for (m=0;m<sc->par.nbmat; m++) {
+  for (int m=0;m<sc->par.nbmat; m++) {
     pm = &sc->material[m];
     pm->depmat[LTria] = old[m];
     old[m] = 0;
   }
 
-  for (k=mesh->nq; k>0; k--) {
+  for (int k=mesh->nq; k>0; k--) {
     pq   = &mesh->quad[k];
-	if ( !pq->v[0] )  continue;
+  if ( !pq->v[0] )  continue;
     nmat = matRef(sc,pq->ref);
     /*nmat = !pq->ref ? DEFAULT_MAT : 1+(pq->ref-1)%(sc->par.nbmat-1);*/
     pq->nxt   = old[nmat];
     old[nmat] = k;
     pm = &sc->material[nmat];
-    for (i=0; i<4; i++) {
+    for (int i=0; i<4; i++) {
       ppt = &mesh->point[pq->v[i]];
       pm->ext[0] = min(pm->ext[0],ppt->c[0]);
       pm->ext[1] = min(pm->ext[1],ppt->c[1]);
@@ -328,21 +330,22 @@ void meshRef(pScene sc,pMesh mesh) {
     }
   }
 
-  for (m=0;m<sc->par.nbmat; m++) {
+  for (int m=0;m<sc->par.nbmat; m++) {
     pm = &sc->material[m];
     pm->depmat[LQuad] = old[m];
     old[m] = 0;
   }
 
-  for (k=mesh->ntet; k>0; k--) {
+  for (int k=mesh->ntet; k>0; k--) {
     pte  = &mesh->tetra[k];
-	if ( !pte->v[0] )  continue;
+
+    if ( !pte->v[0] )  continue;
     nmat = matRef(sc,pte->ref);
     /*nmat = !pte->ref ? DEFAULT_MAT : 1+(pte->ref-1)%(sc->par.nbmat-1);*/
     pte->nxt  = old[nmat];
     old[nmat] = k;
     pm = &sc->material[nmat];
-    for (i=0; i<4; i++) {
+    for (int i=0; i<4; i++) {
       ppt = &mesh->point[pte->v[i]];
       pm->ext[0] = min(pm->ext[0],ppt->c[0]);
       pm->ext[1] = min(pm->ext[1],ppt->c[1]);
@@ -353,20 +356,20 @@ void meshRef(pScene sc,pMesh mesh) {
     }
   }
 
-  for (m=0;m<sc->par.nbmat; m++) {
+  for (int m=0;m<sc->par.nbmat; m++) {
     pm = &sc->material[m];
     pm->depmat[LTets] = old[m];
     old[m] = 0;
   }
 
-  for (k=mesh->nhex; k>0; k--) {
+  for (int k=mesh->nhex; k>0; k--) {
     ph   = &mesh->hexa[k];
     nmat = matRef(sc,ph->ref);
     /*nmat = !ph->ref ? DEFAULT_MAT : 1+(ph->ref-1)%(sc->par.nbmat-1);*/
     ph->nxt   = old[nmat];
     old[nmat] = k;
     pm = &sc->material[nmat];
-    for (i=0; i<8; i++) {
+    for (int i=0; i<8; i++) {
       ppt = &mesh->point[ph->v[i]];
       pm->ext[0] = min(pm->ext[0],ppt->c[0]);
       pm->ext[1] = min(pm->ext[1],ppt->c[1]);
@@ -376,7 +379,7 @@ void meshRef(pScene sc,pMesh mesh) {
       pm->ext[5] = max(pm->ext[5],ppt->c[2]);
     }
   }
-  for (m=0;m<sc->par.nbmat; m++) {
+  for (int m=0;m<sc->par.nbmat; m++) {
     pm = &sc->material[m];
     pm->depmat[LHexa] = old[m];
     old[m] = 0;
@@ -398,7 +401,7 @@ void meshRef(pScene sc,pMesh mesh) {
   }
 */
   if ( ddebug )
-    for (m=0; m<sc->par.nbmat; m++) {
+    for (int m=0; m<sc->par.nbmat; m++) {
       pm = &sc->material[m];
       if ( pm->depmat[LTria] || pm->depmat[LQuad] || pm->depmat[LTets] ||
            pm->depmat[LHexa] )
@@ -408,8 +411,8 @@ void meshRef(pScene sc,pMesh mesh) {
     }
 }
 
-int meshUpdate(pScene sc,pMesh mesh) {
-  int     k,ret;
+int meshUpdate(Scene *sc, Mesh *mesh) {
+  int     ret;
   clock_t  ct;
 
   /* release mesh structure */
@@ -433,7 +436,7 @@ int meshUpdate(pScene sc,pMesh mesh) {
   if ( mesh->nbb && mesh->sol ) {
     if ( (mesh->dim==2 && mesh->nfield==3) ||
          (mesh->dim==3 && mesh->nfield==6) )
-      for (k=1; k<=mesh->nbb; k++)
+      for (int k=1; k<=mesh->nbb; k++)
         free(mesh->sol[k].m);
     M_free(mesh->sol);
     mesh->sol = 0;
@@ -472,6 +475,87 @@ int meshUpdate(pScene sc,pMesh mesh) {
   ct = difftime(clock(),ct);
   fprintf(stdout,"  Input seconds:     %.2f\n",
           (double)ct/(double)CLOCKS_PER_SEC);
+
+  return(1);
+}
+
+int meshAlloc(Mesh *mesh) {
+
+  /* default */
+  if ( ddebug ) printf("allocate %d points\n",mesh->np);
+  mesh->point = (pPoint)M_calloc(mesh->np+1, sizeof(Point),"meshAlloc.point");
+  assert(mesh->point);
+
+  if ( ddebug ) printf("allocate %d tria\n", mesh->nt);
+  if ( mesh->nt ) {
+    mesh->tria = (Triangle*)M_calloc(mesh->nt+1,sizeof(Triangle),"meshAlloc.tria");
+    assert(mesh->tria);
+  }
+  if ( mesh->nt2 ) {
+    mesh->tria2 = (Triangle2*)M_calloc(mesh->nt2+1,sizeof(Triangle2),"meshAlloc.tria2");
+    assert(mesh->tria2);
+  }
+
+  if ( ddebug ) printf("allocate %d quad\n",mesh->nq);
+  if ( mesh->nq ) {
+    mesh->quad = (pQuad)M_calloc(mesh->nq+1,sizeof(Quad),"meshAlloc.quad");
+    assert(mesh->quad);
+  }
+
+  if ( mesh->ntet ) {
+    if ( ddebug ) printf("allocate %d tetra\n",mesh->ntet);
+    mesh->tetra = (pTetra)M_calloc(mesh->ntet+1,sizeof(Tetra),"meshAlloc.tetra");
+    assert(mesh->tetra);
+  }
+
+  if ( mesh->nhex ) {
+    if ( ddebug ) printf("allocate %d hexa\n",mesh->nhex);
+    mesh->hexa = (pHexa)M_calloc(mesh->nhex+1,sizeof(Hexa),"meshAlloc.hexa");
+    assert(mesh->hexa);
+  }
+
+  if ( mesh->na ) {
+    if ( ddebug ) printf("allocate %d edges\n",mesh->na);
+    mesh->edge = (pEdge)M_calloc(mesh->na+1,sizeof(Edge),"meshAlloc.edge");
+    assert(mesh->edge);
+  }
+
+  if ( mesh->nvn || mesh->ntg ) {
+    mesh->extra = (pExtra)M_calloc(1,sizeof(Extra),"meshAlloc.extra");
+    assert(mesh->extra);
+  
+    if ( mesh->nvn ) {
+        mesh->extra->n = (float*)M_calloc(3*mesh->nvn+1,sizeof(float),"inmesh");
+      assert(mesh->extra->n);
+    }
+
+    if ( mesh->ntg ) {
+      mesh->extra->t = (float*)M_calloc(3*mesh->ntg+1,sizeof(float),"inmesh");
+      assert(mesh->extra->t);
+    }
+  }
+
+  return 1;
+}
+
+int solnAlloc(Mesh *mesh) {
+  pSolution  ps;
+  int        k,nbf;
+  
+  /* memory alloc. */
+  mesh->sol = (pSolution)M_calloc(mesh->nbb+1,sizeof(struct solu),"zaldy2");
+  assert(mesh->sol);
+
+  if ( mesh->nfield == 1 )  return(1);
+  if ( mesh->nfield == mesh->dim )
+    nbf = mesh->dim;      /* vector field */
+  else 
+    nbf = mesh->dim*(mesh->dim+1)/2;  /* d*d matrix */        
+
+  for (k=1; k<=mesh->nbb; k++) {
+    ps = &mesh->sol[k];
+    ps->m = (float*)malloc(nbf*sizeof(float));
+  }
 
   return(1);
 }

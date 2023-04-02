@@ -9,27 +9,29 @@
 #include <time.h>
 #include <string.h>
 #include <float.h>
-#include <signal.h>
 #include <ctype.h>
 
 #ifdef WIN32
-#include <windows.h>
-#endif
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#include <GLUT/glut.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
+#  include <windows.h>
 #endif
 
-#include "chrono.h"
+#ifdef __APPLE__
+#  include <OpenGL/gl.h>
+#  include <OpenGL/glu.h>
+#  include <GLUT/glut.h>
+
+#elif defined(__EMSCRIPTEN__)
+#  include <GLES2/gl2.h>
+#  include <GL/glut.h>
+#else
+#  include <GL/gl.h>
+#  include <GL/glu.h>
+#  include <GL/glut.h>
+#endif
+
 #include "memory.h"
 #include "mesh.h"
 #include "grafic.h"
-#include "image.h"
 #include "sproto.h"
 
 #define ME_VER   "4.1a"
@@ -50,19 +52,19 @@
 #define EPS2           2.e-10
 
 #ifndef  TRUE
-#define  TRUE   1
-#define  FALSE  0
+# define  TRUE   1
+# define  FALSE  0
 #endif
 #ifdef M_PI
-#undef M_PI
-#undef M_PI_2
+# undef M_PI
+# undef M_PI_2
 #endif
-#define M_PI            3.14159265358979323846   /* pi   */
-#define M_PI_2          1.57079632679489661923   /* pi/2 */
+# define M_PI            3.14159265358979323846   /* pi   */
+# define M_PI_2          1.57079632679489661923   /* pi/2 */
 
 #ifdef min
-#undef min
-#undef max
+# undef min
+# undef max
 #endif
 #define  min(a,b)       ( ((a) < (b)) ? (a) : (b) )
 #define  max(a,b)       ( ((b) > (a)) ? (b) : (a) )
@@ -75,17 +77,25 @@
 
 
 /* options */
-enum { STANDARD=1, SEQUENCE, VERYBIG, MORPHING, SCHNAUZER, ISOSURF, PARTICLE};
+enum { STANDARD=1, 
+       SEQUENCE, 
+       VERYBIG,
+       MORPHING,
+       SCHNAUZER,
+       ISOSURF,
+       PARTICLE};
 
 
 /* structure canvas */
 typedef struct canvas {
-  pMesh      mesh[MAX_MESH];
-  pScene     scene[MAX_SCENE];
+  Mesh*      mesh[MAX_MESH];
+  Scene     *scene[MAX_SCENE];
   int        nbm,nbs;
 } Canvas;
+
 typedef Canvas * pCanvas;
 
-
+int    EatLine(FILE  *in);
+int    EatSpace(FILE  *in);
 
 #endif

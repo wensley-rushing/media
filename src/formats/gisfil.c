@@ -4,7 +4,7 @@
 
 #define FLOAT_MAX  1.e20
 
-int loadGIS(pMesh mesh) {
+int loadGIS(Mesh*mesh) {
   pQuad      pq;
   pPoint     ppt;
   pSolution  ps;
@@ -85,7 +85,7 @@ int loadGIS(pMesh mesh) {
   mesh->ne = mesh->nq;
 
   /* memory allocation for mesh */
-  if ( !zaldy1(mesh) ) {
+  if ( !meshAlloc(mesh) ) {
     fclose(fp);
     return(0);
   }
@@ -173,7 +173,7 @@ int loadGIS(pMesh mesh) {
   mesh->nfield = 1;
 
   /* allocate memory */
-  if ( !zaldy2(mesh) ) {
+  if ( !solnAlloc(mesh) ) {
     mesh->nbb = 0;
     fclose(fp);
     return(1);

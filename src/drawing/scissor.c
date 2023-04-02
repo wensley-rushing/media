@@ -4,16 +4,15 @@
 
 
 void scissorScene() {
-  pScene      sc;
-  pMesh       mesh;
-  pPersp      p;
-  pTransform  view;
+  Scene      *sc;
+  Persp      *p;
+  Transform  *view;
   int         width,height;
 
   /* default */
   if ( ddebug ) printf("enable scissoring\n");
   sc   = cv.scene[currentScene()];
-  mesh = cv.mesh[sc->idmesh];
+  // Mesh* mesh = cv.mesh[sc->idmesh];
   view = sc->view;
   p    = sc->persp; 
 

@@ -5,16 +5,16 @@
 extern int getIso(pScene sc,double norm,double *hsv);
 
 
-GLuint geomList(pScene sc,pMesh mesh) {
+GLuint geomList(pScene sc,Mesh*mesh) {
   GLuint     list = 0;
-  pMaterial  pm;
-  pEdge      pr;
+  Material  *pm;
+  Edge      *pr;
   pPoint     ppt,pp0,pp1;
-	pSolution  ps0;
+  Solution  *ps0;
   double     dd,rgb[3],val;
   float      n[3];
   int        k,it = 0,nm;
-	char       nodata;
+  char       nodata;
   static float green[4] = {0.0, 1.0, 0.0, 1.0};
   static float rouge[4] = {1.0, 0.0, 0.0, 1.0};
   static float jaune[4] = {1.0, 1.0, 0.0, 1.0};
@@ -22,14 +22,14 @@ GLuint geomList(pScene sc,pMesh mesh) {
   static double hsv[3] = { 0.0, 1.0, 0.8 };
   
   /* default */
-  if ( mesh->na+mesh->nc+mesh->np == 0 )  return(0);
+  if ( mesh->na+mesh->nc+mesh->np == 0 )  return 0;
   nodata = egal(sc->iso.val[0],sc->iso.val[MAXISO-1]);
 
   /* create display list */
   list = glGenLists(1);
-  if ( !list )  return(0);
+  if ( !list )  return 0;
   glNewList(list,GL_COMPILE);
-  if ( glGetError() )  return(0);
+  if ( glGetError() )  return 0;
 
   /* draw corners, ridges and required items */
   if ( ddebug ) printf("construct point list\n");
@@ -59,10 +59,10 @@ GLuint geomList(pScene sc,pMesh mesh) {
     glPointSize(1);
   }
   else {
-		if ( nodata )
-			glPointSize(sc->par.pointsize);
-		else
-			glPointSize(2.0);
+    if ( nodata )
+      glPointSize(sc->par.pointsize);
+    else
+      glPointSize(2.0);
     glBegin(GL_POINTS);
     for (k=1; k<=mesh->np; k++) {
       ppt = &mesh->point[k];
@@ -76,37 +76,37 @@ GLuint geomList(pScene sc,pMesh mesh) {
         n[1] *= dd;
         n[2] *= dd;
       }
-	    if ( !nodata ) {
-	      ps0 = &mesh->sol[k];
-				val = ps0->bb;
-				getIso(sc,val,hsv);
-		    hsvrgb(hsv,rgb);
-		    glColor3dv(rgb);
-	      glVertex3f(ppt->c[0],ppt->c[1],ppt->c[2]);
-			}
-	    else {
-				glColor3fv(rouge);
+      if ( !nodata ) {
+        ps0 = &mesh->sol[k];
+        val = ps0->bb;
+        getIso(sc,val,hsv);
+        hsvrgb(hsv,rgb);
+        glColor3dv(rgb);
+        glVertex3f(ppt->c[0],ppt->c[1],ppt->c[2]);
+      }
+      else {
+        glColor3fv(rouge);
         glNormal3fv(n);
-	      glVertex3f(ppt->c[0],ppt->c[1],ppt->c[2]);
-			}
+        glVertex3f(ppt->c[0],ppt->c[1],ppt->c[2]);
+      }
     }
-		glEnd();
+    glEnd();
 
     /*if ( !nodata) {
-		  glPointSize(sc->par.pointsize);
+      glPointSize(sc->par.pointsize);
       glBegin(GL_POINTS);
-		  for (k=1; k<=mesh->np; k++) {
-			  ppt = &mesh->point[k];
-			  if ( !ppt->ref )  continue;
-	      ps0 = &mesh->sol[k];
-				val = ps0->bb;
-				getIso(sc,val,hsv);
-		    hsvrgb(hsv,rgb);
-		    glColor3dv(rgb);
-			  glVertex3f(ppt->c[0],ppt->c[1],ppt->c[2]);
-		  }
-	    glEnd();
-		}*/
+      for (k=1; k<=mesh->np; k++) {
+        ppt = &mesh->point[k];
+        if ( !ppt->ref )  continue;
+        ps0 = &mesh->sol[k];
+        val = ps0->bb;
+        getIso(sc,val,hsv);
+        hsvrgb(hsv,rgb);
+        glColor3dv(rgb);
+        glVertex3f(ppt->c[0],ppt->c[1],ppt->c[2]);
+      }
+      glEnd();
+    }*/
     it = mesh->np;
   }
 
@@ -120,9 +120,9 @@ GLuint geomList(pScene sc,pMesh mesh) {
 
     if ( pr->tag & M_RIDGE ) {
       if ( pr->tag & M_TAG )
-	      glColor3fv(jaune);  /* ridge + ref en jaune */
+        glColor3fv(jaune);  /* ridge + ref en jaune */
       else
-	      glColor3fv(rouge);  /* ridges en rouge */
+        glColor3fv(rouge);  /* ridges en rouge */
     }
     else if ( !pr->ref ) {
       glColor3fv(sc->par.edge);
@@ -145,7 +145,7 @@ GLuint geomList(pScene sc,pMesh mesh) {
 
   if ( it == 0 ) {
     glDeleteLists(list,1);
-    return(0);
+    return 0;
   }
   else
     return(list);

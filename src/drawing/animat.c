@@ -1,11 +1,12 @@
 #include "medit.h"
+#include "formats/formats.h"
 #include "extern.h"
 #include "sproto.h"
 
-extern void resetLists(pScene ,pMesh );
+extern void resetLists(pScene ,Mesh*);
 
 
-static int getmesh(pMesh mesh,int range) {
+static int getmesh(Mesh*mesh,int range) {
   int     k,ret;
   char   *ptr,data[256];
   static char base[256];
@@ -85,7 +86,7 @@ static int getmesh(pMesh mesh,int range) {
   return(1);
 }
 
-static int getsol(pMesh mesh,int range) { 
+static int getsol(Mesh*mesh,int range) { 
   char   *ptr,data[256];
   static char base[256];
 
@@ -106,7 +107,7 @@ static int getsol(pMesh mesh,int range) {
 	return(1);
 }
 
-int loadNextMesh(pMesh mesh,int km,int ks,int parse) {
+int loadNextMesh(Mesh*mesh,int km,int ks,int parse) {
   pScene    sc;
   int       is;
 
@@ -137,7 +138,7 @@ int loadNextMesh(pMesh mesh,int km,int ks,int parse) {
 }
 
 
-int playAnim(pScene sc,pMesh mesh,int deb,int fin) {
+int playAnim(pScene sc,Mesh*mesh,int deb,int fin) {
   int     k;
   char   *ptr,data[256],base[256];
 
@@ -198,7 +199,7 @@ int playAnim(pScene sc,pMesh mesh,int deb,int fin) {
 }
 
 
-int animParticle(pScene sc,pMesh mesh) {
+int animParticle(pScene sc,Mesh*mesh) {
   int     cur;
   char   *ptr,data[256],base[256];
 
@@ -227,7 +228,7 @@ int animParticle(pScene sc,pMesh mesh) {
 
 
 int animat() {
-  pMesh    mesh;
+  Mesh*   mesh;
   pScene   sc;
   char     data[128],*name;
 

@@ -1,4 +1,5 @@
 #include "medit.h"
+#include "hash.h"
 #include "extern.h"
 #include "sproto.h"
 
@@ -17,7 +18,7 @@ typedef struct saddle {
 static int idir[5] = {0,1,2,0,1};
 
 
-int closedBall(pMesh mesh,int depart,ubyte i) {
+int closedBall(Mesh*mesh,int depart,ubyte i) {
   pTriangle  pt;
   int        adj,iadr;
   ubyte      voy;
@@ -39,7 +40,7 @@ int closedBall(pMesh mesh,int depart,ubyte i) {
 }
 
 
-GLuint listCritPoint(pScene sc,pMesh mesh) {
+GLuint listCritPoint(pScene sc,Mesh*mesh) {
   pTriangle   pt;
   pPoint      p0,p1,p2;
   pSolution   s0,s1,s2;

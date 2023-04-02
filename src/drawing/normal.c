@@ -3,7 +3,7 @@
 #include "sproto.h"
 
 
-GLuint drawNormals(pMesh mesh,pScene sc) {
+GLuint drawNormals(Mesh*mesh,pScene sc) {
   pTriangle   pt;
   pQuad       pq;
   pEdge       pr;

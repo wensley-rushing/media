@@ -7,7 +7,7 @@ static float ident[16] = {
   1.,0.,0.,0., 0.,1.,0.,0., 0.,0.,1.,0., 0.,0.,0.,1.};
 
 
-void setPersp(pScene sc,pPersp p,int pmode) {
+void setPersp(Scene *sc, Persp *p,int pmode) {
   float       tgalpha,deltax,deltay,alphax,alphay,alpha,beta;
   float       rapx,rapy,Deltax,Deltay,yy;
   
@@ -47,8 +47,8 @@ void setPersp(pScene sc,pPersp p,int pmode) {
 }
 
 
-pPersp initPersp(pPersp p,float dmax) {
-  pPersp    pp;
+Persp *initPersp(Persp *p, float dmax) {
+  Persp    *pp;
 
   if ( p ) {
     p->fovy   = 35.0f;
@@ -58,10 +58,10 @@ pPersp initPersp(pPersp p,float dmax) {
     p->alpha  = p->gamma = 0.0f;
     p->depth  = -2.0*dmax;
     p->pmode  = PERSPECTIVE;
-    memcpy(p->matrix,ident,16*sizeof(float));
-    return(p);
-  }
-  else {
+    memcpy(p->matrix, ident, 16*sizeof(float));
+    return p;
+
+  } else {
     pp = (pPersp)M_calloc(1,sizeof(struct sperspective),"persp");
 	assert(pp);
 
@@ -72,8 +72,8 @@ pPersp initPersp(pPersp p,float dmax) {
     pp->alpha  = pp->gamma = 0.0f;
     pp->depth  = -2.0*dmax;
     pp->pmode  = PERSPECTIVE;
-    memcpy(pp->matrix,ident,16*sizeof(float));
-    return(pp);
+    memcpy(pp->matrix, ident, 16*sizeof(float));
+    return pp;
   }
 }
 

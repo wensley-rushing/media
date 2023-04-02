@@ -101,14 +101,14 @@ void drawVector2D(float p[2],double u[2],double scale) {
 }
 
 
-GLuint listClipTetraVector(pMesh mesh) {
-  pMaterial   pm;
-  pTetra      pt;
-  pPoint      ppt;
-  pSolution   ps0;
-  pScene      sc;
-  pClip       clip;
-  double      rgb[3],u[3],epsra,iso,kc,dd,scal,scalemin,scalemax;
+GLuint listClipTetraVector(Mesh*mesh) {
+  Material   *pm;
+  Tetra      *pt;
+  Point      *ppt;
+  Solution   *ps0;
+  Scene      *sc;
+  double      rgb[3],u[3],epsra,iso,kc,dd,scal;
+  // double      scalemin,scalemax;
   float       cp[3];
   GLuint      dlist = 0;
   int         ia,k,l,m;
@@ -119,7 +119,6 @@ GLuint listClipTetraVector(pMesh mesh) {
   if ( ddebug ) printf("create vector list for clip\n");
 
   sc   = cv.scene[currentScene()];
-  clip = sc->clip;
   if ( egal(sc->iso.val[0],sc->iso.val[MAXISO-1]) )  return(0);
 
   /* create display list */
@@ -128,8 +127,8 @@ GLuint listClipTetraVector(pMesh mesh) {
   if ( glGetError() )  return(0);
 
   /* build list */
-  scalemin = sc->dmax * SCALV;
-  scalemax = 10.0*scalemin;
+  // scalemin = sc->dmax * SCALV;
+  // scalemax = 10.0*scalemin;
   mesh->mark++;
   glLineWidth(2.0);
 
@@ -229,14 +228,14 @@ GLuint listClipTetraVector(pMesh mesh) {
   return(dlist);
 }
 
-GLuint listClipHexaVector(pMesh mesh) {
-  pMaterial   pm;
-  pHexa       ph;
-  pPoint      ppt;
-  pSolution   ps0;
-  pScene      sc;
-  pClip       clip;
-  double      rgb[3],u[3],epsra,iso,kc,dd,scal,scalemin,scalemax;
+GLuint listClipHexaVector(Mesh*mesh) {
+  Material   *pm;
+  Hexa       *ph;
+  Point      *ppt;
+  Solution   *ps0;
+  Scene      *sc;
+  double      rgb[3],u[3],epsra,iso,kc,dd,scal;
+  // double      scalemin,scalemax;
   float       cp[3];
   GLuint      dlist = 0;
   int         ia,k,l,m;
@@ -247,7 +246,6 @@ GLuint listClipHexaVector(pMesh mesh) {
   if ( ddebug ) printf("create vector list for clip\n");
 
   sc   = cv.scene[currentScene()];
-  clip = sc->clip;
   if ( egal(sc->iso.val[0],sc->iso.val[MAXISO-1]) )  return(0);
 
   /* create display list */
@@ -256,8 +254,8 @@ GLuint listClipHexaVector(pMesh mesh) {
   if ( glGetError() )  return(0);
 
   /* build list */
-  scalemin = sc->dmax * SCALV;
-  scalemax = 10.0*scalemin;
+  // scalemin = sc->dmax * SCALV;
+  // scalemax = 10.0*scalemin;
   mesh->mark++;
   glLineWidth(2.0);
 
@@ -358,7 +356,7 @@ GLuint listClipHexaVector(pMesh mesh) {
 }
 
 
-GLuint listTria2dVector(pMesh mesh) {
+GLuint listTria2dVector(Mesh*mesh) {
   pMaterial   pm;
   pTriangle   pt;
   pPoint      ppt;
@@ -496,7 +494,7 @@ GLuint listTria2dVector(pMesh mesh) {
 }
 
 
-GLuint listQuad2dVector(pMesh mesh) {
+GLuint listQuad2dVector(Mesh*mesh) {
   pMaterial   pm;
   pQuad       pq;
   pPoint      ppt;
@@ -634,7 +632,7 @@ GLuint listQuad2dVector(pMesh mesh) {
 }
 
 
-GLuint listTria3dVector(pMesh mesh) {
+GLuint listTria3dVector(Mesh*mesh) {
   pMaterial   pm;
   pTriangle   pt;
   pPoint      ppt;

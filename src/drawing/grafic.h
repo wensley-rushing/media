@@ -1,6 +1,8 @@
 #ifndef _GRAFIC_H
 #define _GRAFIC_H
 
+#include "transform.h"
+
 #define MAX_LIST  4
 #define MAXISO    5
 
@@ -32,7 +34,7 @@ enum {WIRE   = S_BDRY,
       FILL   = S_FILL + S_COLOR,
       SHADED = S_BDRY + S_FILL + S_COLOR,
       SIZEMAP= S_BDRY + S_FILL + S_MAP
-     };
+};
 enum {LTria, LQuad, LTets, LHexa, LEdges, LPoint};
 enum {PERSPECTIVE, CAMERA, ORTHO};
 enum {X_AXIS=0, Y_AXIS, Z_AXIS};
@@ -109,18 +111,8 @@ typedef struct _cell {
   char* format;
 } cell;
 
-typedef struct transform {
-  float    pos[3];                /* current mouse position */
-  float    angle,axis[3];         /* rotation angle + axis  */
-  float    panx,pany,opanx,opany; /* screen translation     */
-  float    matrix[16],oldmat[16]; /* transformation matrix  */
-  float    rot[16],tra[16];
-  int      mstate,mbutton,manim;
-} Transform;
-typedef Transform * pTransform;
-
 typedef struct cube {
-  pTransform   cubetr;
+  Transform   *cubetr;
   float        cmi[3],cma[3];
   ubyte        active;
 } Cube;
@@ -178,6 +170,7 @@ typedef struct strgrd {
   GLuint       grid;
   ubyte        active;
 } Strgrd;
+
 typedef Strgrd * pStrgrd;
 
 typedef struct spart {
@@ -196,21 +189,21 @@ typedef struct siso {
 } Iso;
 
 typedef struct scene {
-  pTransform view;
-  pClip      clip;
-  pCube      cube;
-  pPersp     persp;
-  pCamera    camera;
-  pMaterial  material;
-  pStream    stream;
+  Transform *view;
+  Clip      *clip;
+  Cube      *cube;
+  Persp     *persp;
+  Camera    *camera;
+  Material  *material;
+  Stream    *stream;
   /*pStrgrd    stg;*/
   Param      par;
   Trajet     path;
   Iso        iso;
 
-  float      dmin,dmax;       /* scene size    */
-  float      shrink;          /* shrink value  */
-  float      cx,cy,cz;        /* center of scene */
+  float      dmin,dmax;          /* scene size    */
+  float      shrink;             /* shrink value  */
+  float      cx,cy,cz;           /* center of scene */
   
   GLuint     dlist[MAX_LIST];    /* display lists  */
   GLuint     mlist[MAX_LIST];    /* metric lists   */
@@ -233,6 +226,7 @@ typedef struct scene {
   ubyte      isotyp;
   ubyte      picked;
 } Scene;
+
 typedef Scene * pScene;
 
 

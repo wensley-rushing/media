@@ -18,7 +18,7 @@ static int idirt[7] = {0,1,2,3,0,1,2};
 
 
 /* very sioux! (09/2002) */
-int hashTetra(pMesh mesh) {
+int hashTetra(Mesh*mesh) {
   pTetra    pt,pt1;
   int       k,kk,pp,l,ll,mins,mins1,maxs,maxs1,sum,sum1,iadr;
   int      *hcode,*link,inival,hsize;
@@ -138,7 +138,7 @@ int hashTetra(pMesh mesh) {
 
 
 /* very sioux! (09/2002) */
-int hashHexa(pMesh mesh) {
+int hashHexa(Mesh*mesh) {
   pHexa     ph,ph1;
   int       k,kk,iadr,pp,l,ll,v;
   int       imin,mins,mins1,opps,opps1;
@@ -274,7 +274,7 @@ int hashHexa(pMesh mesh) {
 
 
 /* very sioux! (09/2002) */
-int hashTria(pMesh mesh) {
+int hashTria(Mesh*mesh) {
   pTriangle pt,pt1;
   int       k,kk,l,ll,mins,maxs,mins1,maxs1,hsize;
   int      *hcode,*link,inival,iadr,pp;

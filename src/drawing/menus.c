@@ -1,4 +1,6 @@
 #include "medit.h"
+#include "image.h"
+#include "formats/formats.h"
 #include "extern.h"
 #include "sproto.h"
 
@@ -9,7 +11,7 @@ extern int refitem,refmat,reftype,imstep,imreverse;
 extern int *pilmat,ipilmat;
 
 /* rebuild display lists */
-void doLists(pScene sc,pMesh mesh) {
+void doLists(pScene sc,Mesh*mesh) {
   int     k;
 
   /*default */
@@ -36,7 +38,7 @@ void doLists(pScene sc,pMesh mesh) {
 
 
 /* build metric list */
-void doMapLists(pScene sc,pMesh mesh,int reset) {
+void doMapLists(pScene sc,Mesh*mesh,int reset) {
   int   k;
 
   /*default */
@@ -74,7 +76,7 @@ void doMapLists(pScene sc,pMesh mesh,int reset) {
 
 
 /* rebuild iso-values lists */
-void doIsoLists(pScene sc,pMesh mesh,int reset) {
+void doIsoLists(pScene sc,Mesh*mesh,int reset) {
   pPoint  ppt;
   int     k,kk,ret;
   
@@ -171,7 +173,7 @@ void doIsoLists(pScene sc,pMesh mesh,int reset) {
 }
 
 
-void resetLists(pScene sc,pMesh mesh) {
+void resetLists(pScene sc,Mesh*mesh) {
   int    kk;
 
   for (kk=0; kk<MAX_LIST; kk++) {
@@ -193,7 +195,7 @@ void resetLists(pScene sc,pMesh mesh) {
 
 void keyFile(unsigned char key,int x,int y) {
   pScene       sc;
-  pMesh        mesh;
+  Mesh*       mesh;
   pTransform   view;
   char        *ptr,data[128];
   ubyte        post  = FALSE,clipon;
@@ -292,9 +294,9 @@ void menuFile(int item) {
 
 
 void keyItem(unsigned char key,int x,int y) {
-  pScene  sc;
-  pMesh   mesh;
-  pCube   cube;
+  Scene  *sc;
+  Mesh   *mesh;
+  Cube   *cube;
   ubyte   post = TRUE;
 
   /* default */
@@ -364,7 +366,7 @@ void menuItem(int item) {
 
 void keyAnim(unsigned char key,int x,int y) {
   pScene  sc;
-  pMesh   mesh;
+  Mesh*  mesh;
   pClip   clip;
   ubyte   post = TRUE;
   char   *ptr,base[256];
@@ -484,7 +486,7 @@ void menuAnim(int item) {
 
 void keyTrajet(unsigned char key,int x,int y) {
   pScene   sc;
-  pMesh    mesh;
+  Mesh*   mesh;
 
   sc = cv.scene[currentScene()];
   mesh = cv.mesh[sc->idmesh];
@@ -516,7 +518,7 @@ void menuTrajet(int item) {
 
 void keyMode(unsigned char key,int x,int y) {
   pScene  sc;
-  pMesh   mesh;
+  Mesh*  mesh;
   ubyte   post = TRUE,dolist = FALSE,material;
 
   sc   = cv.scene[currentScene()];
@@ -577,7 +579,7 @@ void menuScene(int item) {
 
 void keyView(unsigned char key,int x,int y) {
   pScene  sc,sc1;
-  pMesh   mesh;
+  Mesh*  mesh;
   float   dmax;
   ubyte   post = FALSE;
 
@@ -657,7 +659,7 @@ void menuView(int item) {
 
 void keyColor(unsigned char key,int x,int y) {
   pScene     sc;
-  pMesh      mesh;
+  Mesh*     mesh;
   pMaterial  pm;
   int        i,k;
   ubyte      post = TRUE,dolist = FALSE;
@@ -719,7 +721,7 @@ void menuColor(int item) {
 
 void keyClip(unsigned char key,int x,int y) {
   pScene  sc;
-  pMesh   mesh;
+  Mesh*  mesh;
   pClip   clip;
   ubyte   post = TRUE;
 
@@ -778,7 +780,7 @@ void menuClip(int item) {
 
 void keyCube(unsigned char key,int x,int y) {
   pScene  sc;
-  pMesh   mesh;
+  Mesh*  mesh;
   pCube   cube;
   ubyte   post = TRUE;
 
@@ -814,7 +816,7 @@ void keyCube(unsigned char key,int x,int y) {
 
 void keyFeature(unsigned char key,int x,int y) {
   pScene  sc;
-  pMesh   mesh;
+  Mesh*  mesh;
   ubyte   post=TRUE,dolist=TRUE;
 
   /* default */
@@ -865,14 +867,15 @@ void menuFeature(int item) {
   keyFeature((unsigned char)item,0,0);
 }
 
-
+/*
 void menuImage(int item) {
   imgtype = item;
 }
+*/
 
 void keyMetric(unsigned char key,int x,int y) {
   pScene  sc;
-  pMesh   mesh;
+  Mesh*  mesh;
   pPoint  ppt;
   float   maxd;
   int     k,kk;
@@ -1014,7 +1017,7 @@ void menuMetric(int item) {
 }
 
 
-int createMenus(pScene sc,pMesh mesh) {
+int createMenus(pScene sc,Mesh*mesh) {
   int   menu,amenu,fmenu,femenu,vmenu,mmenu,smenu;
   int   clmenu,cmenu,vwmenu,trmenu;
 

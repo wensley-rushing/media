@@ -11,7 +11,7 @@ int pathAdd(pScene sc,int x,int y) {
   GLdouble    ptx,pty,ptz;
   GLint       viewport[4];
   Trajet     *path;
-  pMesh       mesh;
+  Mesh*      mesh;
   pTransform  view;
   float      *p,*p1,*a;
   int         k;
@@ -66,7 +66,7 @@ int pathAdd(pScene sc,int x,int y) {
 /* build list of points */
 GLuint pathList(pScene sc) {
   Trajet   path;
-  pMesh    mesh;
+  Mesh*   mesh;
   GLuint   dlist;
   float   *p;
   int      k;
@@ -150,7 +150,7 @@ int pathLoad(char *file,pScene sc) {
 
 int pathSave(char *file,pScene sc) {
   FILE      *out;
-  pMesh      mesh;
+  Mesh*     mesh;
   time_t     timeptr;
   float     *p;
   int        i,k;

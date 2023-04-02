@@ -133,7 +133,7 @@ void specCamera(pScene sc,int key) {
 
 
 /* change center of scene */
-static void changeCenter(pScene sc,pMesh mesh) {
+static void changeCenter(pScene sc,Mesh*mesh) {
   pPoint     p0;
   pTriangle  pt;
   pQuad      pq;
@@ -201,7 +201,7 @@ static void changeCenter(pScene sc,pMesh mesh) {
 void special(int key,int x,int y) {
   pTransform  view;
   pScene      sc;
-  pMesh       mesh;
+  Mesh*      mesh;
   pClip       clip;
   pCube       cube;
   float       pancoeff = 0.1f;
@@ -327,7 +327,7 @@ void keyScene(unsigned char key,int x,int y) {
   pTriangle   pt;
   pQuad       pq;
   pScene      sc,sc1;
-  pMesh       mesh;
+  Mesh*      mesh;
   pClip       clip;
   pCube       cube;
   pPersp      p;
@@ -835,7 +835,7 @@ void keyScene(unsigned char key,int x,int y) {
       fprintf(stdout," = 0\n");
       clip->eqn[3] += (a*mesh->xtra+b*mesh->ytra+c*mesh->ztra);
       clip->active |= C_REDO;
-			resetClip(sc,clip,mesh);
+      resetClip(sc,clip,mesh);
       post   = TRUE;
       dolist = TRUE;
       break;

@@ -17,7 +17,7 @@ static GLfloat IdMatrix[16] = {
    0.0, 0.0, 0.0, 1.0
 };
 
-void drawEllipsoid(pScene sc,pMesh mesh,int typel,int k) {
+void drawEllipsoid(pScene sc,Mesh*mesh,int typel,int k) {
   pMaterial    pm;
   pSolution    ps;
   pTriangle    pt;
@@ -180,7 +180,7 @@ void glCircle(float radius) {
 }
 
 
-void drawEllipse(pScene sc,pMesh mesh,int typel,int k) {
+void drawEllipse(pScene sc,Mesh*mesh,int typel,int k) {
   pMaterial    pm;
   pSolution    ps;
   pPoint       p0;
@@ -238,7 +238,7 @@ void drawEllipse(pScene sc,pMesh mesh,int typel,int k) {
 }
 
 
-GLuint drawAllEllipse(pScene sc,pMesh mesh) {
+GLuint drawAllEllipse(pScene sc,Mesh*mesh) {
   GLuint       dlist;
   pSolution    ps;
   pMaterial    pm;
@@ -329,7 +329,7 @@ GLuint drawAllEllipse(pScene sc,pMesh mesh) {
 }
 
 
-void circumSphere(pScene sc,pMesh mesh,int typel,int k) {
+void circumSphere(pScene sc,Mesh*mesh,int typel,int k) {
   pMaterial    pm;
   double       c[3],rad;
 

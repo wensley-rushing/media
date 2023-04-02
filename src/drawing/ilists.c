@@ -7,7 +7,7 @@
 
 
 /* build lists for iso-surfaces */
-GLuint listTriaIso(pScene sc,pMesh mesh) {
+GLuint listTriaIso(pScene sc,Mesh*mesh) {
   FILE      *out;
   GLuint     dlist = 0;
   pTriangle  pt;
@@ -154,7 +154,7 @@ GLuint listTriaIso(pScene sc,pMesh mesh) {
 }
 
 /* build lists for isolines (isovalues given in file) */
-GLuint listTriaIso2(pScene sc,pMesh mesh) {
+GLuint listTriaIso2(pScene sc,Mesh*mesh) {
   FILE      *in;
   GLuint     dlist = 0;
   pTriangle  pt;
@@ -275,7 +275,7 @@ GLuint listTriaIso2(pScene sc,pMesh mesh) {
 }
 
 /* build lists for iso-surfaces */
-GLuint listQuadIso(pScene sc,pMesh mesh) {
+GLuint listQuadIso(pScene sc,Mesh*mesh) {
   GLuint     dlist = 0;
   pQuad      pq;
   pPoint     p0,p1;
@@ -360,7 +360,7 @@ GLuint listQuadIso(pScene sc,pMesh mesh) {
 }
 
 /* build lists for iso-surfaces */
-GLuint listTetraIso(pScene sc,pMesh mesh) {
+GLuint listTetraIso(pScene sc,Mesh*mesh) {
   FILE      *outv,*outf;
   GLuint     dlist = 0;
   pTetra     pt;
@@ -641,7 +641,7 @@ GLuint listTetraIso(pScene sc,pMesh mesh) {
 }
 
 
-int tetraIsoPOVray(pScene sc,pMesh mesh) {
+int tetraIsoPOVray(pScene sc,Mesh*mesh) {
   FILE      *isofil;
   pTetra     pt;
   pPoint     p0,p1;

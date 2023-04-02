@@ -33,7 +33,7 @@ int EatSpace(FILE  *in) {
 }
 
 
-int bbfile(pMesh mesh) {
+int bbfile(Mesh*mesh) {
   FILE      *in;
   pSolution  ps;
   double     a,b,c,lambda[3],eigv[3][3],m[6],vp[2][2];
@@ -150,7 +150,7 @@ int bbfile(pMesh mesh) {
   mesh->bbmax  = -1.e10;
 
   /* allocate memory */
-  if ( !zaldy2(mesh) ) {
+  if ( !solnAlloc(mesh) ) {
     mesh->nbb = 0;
     fclose(in);
     return(0);

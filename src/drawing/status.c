@@ -1,4 +1,5 @@
 #include "medit.h"
+#include "image.h"
 #include "extern.h"
 #include "sproto.h"
 
@@ -63,7 +64,7 @@ void backTexture(pScene sc) {
 
 void redrawStatusBar(pScene sc) {
   pClip  clip = sc->clip;
-  pMesh  mesh = cv.mesh[sc->idmesh];
+  Mesh* mesh = cv.mesh[sc->idmesh];
   double dd;
   char   buf[128];
   float  frame,elpms;
@@ -133,7 +134,9 @@ void redrawStatusBar(pScene sc) {
       output2(150,8,"%s = 0",buf);
   }
 
-  if ( sc->picklist && sc->par.xs > 390 && !sc->isotyp & S_PARTICLE )
+  if ( sc->picklist && 
+       sc->par.xs > 390 && 
+     (!sc->isotyp)&S_PARTICLE )
     output2(350,8,"%15s",sc->material[refmat].name);
 
   if ( sc->persp->pmode == PERSPECTIVE && sc->item & S_PALETTE )

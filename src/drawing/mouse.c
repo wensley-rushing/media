@@ -52,7 +52,7 @@ static void point2Vect(int x,int y,int w,int h,float *v) {
 }
 
 
-void ortho2D(pScene sc,ubyte mode) {
+void ortho2D(Scene *sc, ubyte mode) {
   if ( mode == ON ) {
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
@@ -78,7 +78,7 @@ static void drawRubberBand(int xa,int ya,int xb,int yb) {
   glRecti(xa,ya,xb,yb);
 }
 
-static void rubberMotion(int x,int y) {
+static void rubberMotion(int x, int y) {
   pScene      sc;
   pPersp      p;
 
@@ -180,7 +180,7 @@ void mouse(int button,int state,int x,int y) {
         ryi = ry1 = sc->par.ys-y;
         p->rubber = 1;
         glDrawBuffer(GL_BACK_LEFT);
-        ortho2D(sc,ON);
+        ortho2D(sc, ON);
         glutMotionFunc(rubberMotion);
         return;
       }

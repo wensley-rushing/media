@@ -20,6 +20,7 @@ void writeEPSheader(FILE *out,char *data,char key,int ww,int hh,float cm,float d
   fprintf(out,"%%LanguageLevel: 1\n");
   fprintf(out,"%%%%Title: %s\n",data);
   fprintf(out,"%%%%Creator: medit -  (C) INRIA-Rocquencourt, 1999-2001\n");
+  // fprintf(out,"%%%%Creation Date: %s");
   fprintf(out,"%%%%BoundingBox: 50 50 %d %d\n",
                (int)(ww*72./dpi+50.5),(int)(hh*72.0/dpi+50.5));
   fprintf(out,"%%%%Pages: (atend)\n");

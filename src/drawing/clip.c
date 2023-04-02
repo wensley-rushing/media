@@ -45,7 +45,7 @@ static void drawCap(pScene sc,pClip clip,GLboolean docap) {
 
 
 /* display clipping plane */
-void updateClip(pClip clip,pMesh mesh) {
+void updateClip(pClip clip,Mesh*mesh) {
   pScene      sc;
   pTransform  cliptr,view;
   GLfloat     dd,dmax,inv[16],axis[4],trans[4],matrix[16];
@@ -157,7 +157,7 @@ void updateClip(pClip clip,pMesh mesh) {
 }
 
 
-void clipVertices(pMesh mesh,pScene sc,pClip clip) {
+void clipVertices(Mesh*mesh,pScene sc,pClip clip) {
   pTetra     pt;
   pHexa      ph;
   pPoint     p0;
@@ -206,7 +206,7 @@ void clipVertices(pMesh mesh,pScene sc,pClip clip) {
 }
 
 
-void drawClip(pScene sc,pClip clip,pMesh mesh,GLboolean docap) {
+void drawClip(pScene sc,pClip clip,Mesh*mesh,GLboolean docap) {
   pTransform  cliptr,view;
   GLfloat     scale;
 
@@ -312,7 +312,7 @@ void invertClip(pScene sc,pClip clip) {
   plane[0]     = -plane[0];
 }
 
-void resetClip(pScene sc,pClip clip,pMesh mesh) {
+void resetClip(pScene sc,pClip clip,Mesh*mesh) {
   double    dd;
 
   resetTransform(clip->cliptr);
@@ -329,7 +329,7 @@ void resetClip(pScene sc,pClip clip,pMesh mesh) {
 
 
 /* create a clipping plane */
-pClip createClip(pScene sc,pMesh mesh) {
+pClip createClip(pScene sc,Mesh*mesh) {
   pClip    clip;
 
   /* default */

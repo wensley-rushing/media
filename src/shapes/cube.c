@@ -4,7 +4,7 @@
 
 
 /* display cube */
-void updateCube(pCube cube,pMesh mesh) {
+void updateCube(pCube cube,Mesh*mesh) {
   pScene      sc;
   pTransform  cubetr,view;
   GLfloat     inv[16],axis[4],trans[4];
@@ -61,7 +61,7 @@ void updateCube(pCube cube,pMesh mesh) {
 }
 
 
-void dumpCube(pScene sc,pMesh mesh,pCube cube) {
+void dumpCube(pScene sc,Mesh*mesh,pCube cube) {
   float  *tr,u[4];
   double  v[4];
   int     i;
@@ -100,7 +100,7 @@ void dumpCube(pScene sc,pMesh mesh,pCube cube) {
 }
 
 
-void resetCube(pScene sc,pCube cube,pMesh mesh) {
+void resetCube(pScene sc,pCube cube,Mesh*mesh) {
 
   resetTransform(cube->cubetr);
 
@@ -114,7 +114,7 @@ void resetCube(pScene sc,pCube cube,pMesh mesh) {
 }
 
 
-pCube createCube(pScene sc,pMesh mesh) {
+pCube createCube(pScene sc,Mesh*mesh) {
   pCube   cube;
 
   cube = (pCube)M_calloc(1,sizeof(struct cube),"cube");

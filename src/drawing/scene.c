@@ -1,6 +1,7 @@
 #include "medit.h"
 #include "extern.h"
 #include "sproto.h"
+#include "image.h"
 
 
 extern GLboolean  hasStereo;
@@ -107,7 +108,7 @@ void reshapeScene(int width,int height) {
 
 
 static void drawList(pScene sc,int clip,int map) {
-  pMesh   mesh = cv.mesh[sc->idmesh];
+  Mesh*  mesh = cv.mesh[sc->idmesh];
   ubyte   elev = sc->mode & S_ALTITUDE;
 
   if ( ddebug ) printf("drawList %p %d %d\n",sc,clip,map);
@@ -313,7 +314,7 @@ static void displayScene(pScene sc,int mode,int clip) {
   }
 }
 
-static void displayData(pScene sc,pMesh mesh) {
+static void displayData(pScene sc,Mesh*mesh) {
   int  kk;
   
   glDisable(GL_LIGHTING);
@@ -382,7 +383,7 @@ static void displayData(pScene sc,pMesh mesh) {
 
 void setupView(pScene sc) {
   pScene       slave;
-  pMesh        mesh;
+  Mesh*       mesh;
   pTransform   view;
   pPersp       p;
   pCamera      c;
@@ -457,7 +458,7 @@ void setupView(pScene sc) {
 
 
 void drawModel(pScene sc) {
-  pMesh        mesh;
+  Mesh*       mesh;
   pTransform   view;
   pClip        clip;
   ubyte        sstatic;
@@ -540,7 +541,7 @@ void drawModel(pScene sc) {
 
 
 void redrawMorphing(pScene sc) {
-  pMesh   mesh;
+  Mesh*  mesh;
   
   if ( morphing ) {
     mesh = cv.mesh[sc->idmesh];
@@ -566,7 +567,7 @@ void glutIdle(void) {
 
 void streamIdle(void) {
   pScene         sc;
-  pMesh          mesh;
+  Mesh*         mesh;
   float          elp;
   clock_t        tim;
   static clock_t timbase= 0;
@@ -625,16 +626,13 @@ void streamIdle(void) {
 
 /* OpenGL callbacks */
 void redrawScene() {
-  pScene       sc,slave;
-  pTransform   view;
-  pPersp       p;
-  pCamera      c;
+  Scene       *slave;
   double       ndfl,ratio,top,bottom,left,right,nnear,ffar;
 
-  sc   = cv.scene[currentScene()];
-  view = sc->view;
-  p    = sc->persp;
-  c    = sc->camera;
+  Scene *sc       = cv.scene[currentScene()];
+  Transform *view = sc->view;
+  Persp *p        = sc->persp;
+  // Camera *c    = sc->camera;
 
   if ( stereoMode == MONO || !hasStereo ) {
     glDrawBuffer(GL_BACK_LEFT);
@@ -729,7 +727,7 @@ void redrawScene() {
 /* OpenGL callbacks */
 void redrawSchnauzer() {
   pScene  sc = cv.scene[currentScene()];
-  pMesh   mesh;
+  Mesh*  mesh;
   char   *ptr,data[256];
 
   mesh = cv.mesh[sc->idmesh];
@@ -761,7 +759,7 @@ void deleteScene(pScene sc) {
 }
 
 
-void initGrafix(pScene sc,pMesh mesh) {
+void initGrafix(pScene sc,Mesh*mesh) {
   GLfloat  lightamb[4] = { 0.3, 0.3, 0.3, 1.0 };
   GLfloat  lightdif[4] = { 1.0, 1.0, 1.0, 1.0 };
   GLfloat  lightpos[4] = { 0.0, 0.0, 1.0, 0.0 };
@@ -809,7 +807,7 @@ void initGrafix(pScene sc,pMesh mesh) {
 
 /* new scene */
 int createScene(pScene sc,int idmesh) {
-  pMesh     mesh;
+  Mesh*    mesh;
   char      data[128];
 
   /* default */

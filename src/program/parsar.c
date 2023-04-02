@@ -9,7 +9,11 @@
 #include "sproto.h"
 
 short schw,schh;
-extern ubyte option,infogl,fullscreen,dosurf,stereoMode;
+extern ubyte option,
+             infogl,
+             fullscreen,
+             dosurf,
+             stereoMode;
 
 void usage() {
   fprintf(stdout,"Usage: medit [options] [f1 .. fn]\n");
@@ -34,7 +38,7 @@ void usage() {
 
 
 int parsar(int argc,char *argv[]) {
-  pMesh    mesh;
+  Mesh*   mesh;
   int      i;
 
   /* default*/
@@ -91,17 +95,17 @@ int parsar(int argc,char *argv[]) {
     }
     else {
       if ( !cv.mesh[cv.nbm] ) {
-        cv.mesh[cv.nbm] = (pMesh)M_calloc(1,sizeof(Mesh),"parsar.mesh");
+        cv.mesh[cv.nbm] = (Mesh*)M_calloc(1,sizeof(Mesh),"parsar.mesh");
         if ( !cv.mesh[cv.nbm] )  return(0);
       }
       mesh = cv.mesh[cv.nbm];
       /*mesh->name = argv[i];*/
 	  strcpy(mesh->name,argv[i]);
       if ( ddebug )  printf("parsar: mesh[%d] %s\n",cv.nbm,mesh->name);
-      if ( ++cv.nbm == MAX_MESH )  return(1);
+      if ( ++cv.nbm == MAX_MESH )  return 1;
     }
     i++;
   }
 
-  return(1);
+  return 1;
 }

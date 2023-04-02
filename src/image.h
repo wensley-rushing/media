@@ -9,7 +9,6 @@ typedef struct {
   int        sizeX,sizeY;
   GLubyte   *data;
 } PPMimage;
-typedef PPMimage *pPPMimage;
 
 typedef struct {
   unsigned char idfield_len;
@@ -23,6 +22,12 @@ typedef struct {
   unsigned char pixel_size;
   unsigned char image_desc;
 } TGAheader;
+
+/* image.c */
+PPMimage *loadPPM(const char *imgname, int *type);
+int    savePPM(const char *imgname, PPMimage* img, int typimg);
+void   saveEPS(pScene sc, const char *imgname, PPMimage* pixels);
+int    imgHard(pScene sc,char *data,char key);
 
 #ifdef __cplusplus
 }

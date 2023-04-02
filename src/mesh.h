@@ -78,6 +78,7 @@ typedef struct solu {
   float  *m,bb,time;
   int     ver,dim;
 } Solution;
+
 typedef Solution  * pSolution;
 
 /* Mesh: mesh data structure */
@@ -90,22 +91,33 @@ typedef struct mesh {
   int         nvn,ntg,dim,ver,nbb,typage,nfield,mark;
   char        name[256],typ;
 
-  pPoint      point;
-  pTriangle   tria;
-	pTriangle2  tria2;
-  pQuad       quad;
-  pEdge       edge;
-  pTetra      tetra;
-  pHexa       hexa;
+  Point      *point;
+  Triangle   *tria;
+  Triangle2  *tria2;
+  Quad       *quad;
+  Edge       *edge;
+  Tetra      *tetra;
+  Hexa       *hexa;
 
   int        *adja;
   int        *grid;
   ubyte      *voy;
 
   pExtra      extra;
-  pSolution   sol;
+  Solution   *sol;
 } Mesh;
+
 typedef Mesh  * pMesh;
 
+#include "grafic.h"
+/* mesh.c */
+void   meshInfo(Mesh*);
+int    meshSurf(Mesh*);
+void   meshCoord(Mesh*, int );
+void   meshBox(Mesh*, int bb);
+void   meshRef(Scene *, Mesh*);
+int    meshUpdate(Scene *, Mesh*);
+int    meshAlloc(Mesh *);
+int    solnAlloc(Mesh *);
 
 #endif

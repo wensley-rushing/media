@@ -16,6 +16,7 @@ static GLfloat IdMatrix[16] = {
    0.0, 0.0, 0.0, 1.0
 };
 
+
 /* set font style and size */
 void setFont(char* name,int size) {
   GLvoid *font_style = GLUT_BITMAP_HELVETICA_10;
@@ -39,6 +40,7 @@ void setFont(char* name,int size) {
     font_style = GLUT_BITMAP_9_BY_15;
 }
 
+
 /* display string format at pos(x,y) */
 void drwstr(GLuint x,GLuint y,char* format, ...) {
   va_list  args;
@@ -48,26 +50,29 @@ void drwstr(GLuint x,GLuint y,char* format, ...) {
   vsprintf(buffer,format,args);
   va_end(args);
 
+#ifndef __EMSCRIPTEN__
   glRasterPos2i(x,y);
   for (s=buffer; *s; s++)
     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*s);
+#endif
 }
 
 void output2(GLfloat x,GLfloat y,char *format,...) {
   va_list  args;
   char    *s,buffer[255];
 
-  /*strcpy(myerror.procname,"output2");*/
   va_start(args,format);
   vsprintf(buffer,format,args);
   va_end(args);
 
+#ifndef __EMSCRIPTEN__
   glRasterPos2f(x,y);
   for (s=buffer; *s; s++) {
     /*glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10,*s);*/
     /*glutBitmapCharacter(font_style,*s);*/
     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10,*s);
   }
+#endif
 }
 
 void output3(GLfloat x,GLfloat y,GLfloat z,char *format,...) {
@@ -78,9 +83,11 @@ void output3(GLfloat x,GLfloat y,GLfloat z,char *format,...) {
   va_start(args,format);
   vsprintf(buffer,format,args);
   va_end(args);
+#ifndef __EMSCRIPTEN__
   glRasterPos3f(x,y,z);
   for (s=buffer; *s; s++)
     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10,*s);
+#endif
 }
 
 /* color converter */
@@ -103,34 +110,6 @@ void hsvrgb(double *hsv,double *rgb) {
   case 4: rgb[0] = t;      rgb[1] = p;      rgb[2] = hsv[2]; break;
   case 5: rgb[0] = hsv[2]; rgb[1] = p;      rgb[2] = q; break;
   }
-}
-
-/* transform: u = MxV */
-void transformPoint(double u[4],float v[4],float m[16]) {
-  u[0] = v[0] * m[0]  + v[1] * m[1]  + v[2] * m[2]  + v[3] * m[3];
-  u[1] = v[0] * m[4]  + v[1] * m[5]  + v[2] * m[6]  + v[3] * m[7];
-  u[2] = v[0] * m[8]  + v[1] * m[9]  + v[2] * m[10] + v[3] * m[11];
-  u[3] = v[0] * m[12] + v[1] * m[13] + v[2] * m[14] + v[3] * m[15];
-}
-
-void transformPoint2(double u[4],float v[4],float m[16]) {
-  u[0] = v[0] * m[0] + v[1] * m[4] + v[2] * m[8]  + v[3] * m[12];
-  u[1] = v[0] * m[1] + v[1] * m[5] + v[2] * m[9]  + v[3] * m[13];
-  u[2] = v[0] * m[2] + v[1] * m[6] + v[2] * m[10] + v[3] * m[14];
-  u[3] = v[0] * m[3] + v[1] * m[7] + v[2] * m[11] + v[3] * m[15];
-}
-
-void transformPointd(double u[3],double v[3],double m[16]) {
-  u[0] = v[0] * m[0]  + v[1] * m[1]  + v[2] * m[2];
-  u[1] = v[0] * m[4]  + v[1] * m[5]  + v[2] * m[6];
-  u[2] = v[0] * m[8]  + v[1] * m[9]  + v[2] * m[10];
-}
-
-void transformVector(float u[4],float v[4],float m[16]) {
-  u[0] = v[0] * m[0] + v[1] * m[4] + v[2] * m[8];
-  u[1] = v[0] * m[1] + v[1] * m[5] + v[2] * m[9];
-  u[2] = v[0] * m[2] + v[1] * m[6] + v[2] * m[10];
-  u[3] = v[0] * m[3] + v[1] * m[7] + v[2] * m[11];
 }
 
 
@@ -259,6 +238,7 @@ void print_matrixd(const GLdouble m[16],const char *ligne) {
     printf("%f %f %f %f\n",m[i],m[4+i],m[8+i],m[12+i]);
   printf("---------------------------------\n");
 }
+
 int filnum(char *data,int numdep,char *ext) {
   FILE  *in;
   char   tmpstr[256];
@@ -268,8 +248,8 @@ int filnum(char *data,int numdep,char *ext) {
     in = fopen(tmpstr,"r");
     if ( !in ) return(numdep);
     fclose(in);
-  }
-  while ( ++numdep < 999 );
+  } while ( ++numdep < 999 );
+
   return(-1);
 }
 

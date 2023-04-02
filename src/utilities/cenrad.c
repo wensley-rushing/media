@@ -8,7 +8,7 @@
 
 
 /* compute circumradius and center */
-int cenrad(pMesh mesh,int iel,double *c,double *rad) {
+int cenrad(Mesh *mesh,int iel,double *c,double *rad) {
   pTetra      pt;
   pPoint      p1,p2,p3,p4;
   double      dd,ux,uy,uz,n1[3],n2[3],n3[3],c1,c2,c3,pl1,pl2,pl3;

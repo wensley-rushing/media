@@ -1,4 +1,5 @@
 #include "medit.h"
+#include "hash.h"
 #include "extern.h"
 #include "sproto.h"
 
@@ -8,8 +9,8 @@ Particle  *tp;
 
 
 void colorParticle(pScene sc,pParticle pp) {
+
   double        rgb[3],norm,kc;
-  int           i;
   static double hsv[3] = { 0.0, 1.0, 0.80 };
 
   norm = pp->norm;
@@ -17,8 +18,11 @@ void colorParticle(pScene sc,pParticle pp) {
     norm = sc->iso.val[0];  
   else if ( norm > sc->iso.val[MAXISO-1] )
     norm = sc->iso.val[MAXISO-1];
+
+  int i;
   for (i=0; i<MAXISO-1; i++)
     if ( norm < sc->iso.val[i] )  break;
+
   kc = (norm-sc->iso.val[i-1]) / (sc->iso.val[i] - sc->iso.val[i-1]);
   hsv[0] = sc->iso.col[i-1]*(1.0-kc)+sc->iso.col[i]*kc;
 
@@ -45,7 +49,7 @@ void drawParticle(pScene sc,pParticle pp) {
 }
 
 
-void computeTetraParticle(pScene sc,pMesh mesh,int k) {
+void computeTetraParticle(pScene sc,Mesh*mesh,int k) {
   pTetra      pt;
   pStream     st;
   pParticle   pp;
@@ -75,7 +79,7 @@ void computeTetraParticle(pScene sc,pMesh mesh,int k) {
     }
     if ( pos[0]<st->xmin || pos[0]>st->xmax ||
          pos[1]<st->ymin || pos[1]>st->ymax ||
-	     pos[2]<st->zmin || pos[2]>st->zmax ) {
+         pos[2]<st->zmin || pos[2]>st->zmax ) {
       pp->flag = 0;
       break;
     }
@@ -120,8 +124,10 @@ void computeTetraParticle(pScene sc,pMesh mesh,int k) {
     /* vector field interpolation */
     pp->norm = field3DInterp(mesh,pp->nsdep,pp->cb,v);
     pp->step = HSIZ*min(pp->size,pp->norm);
+
     if ( sc->par.maxtime < FLT_MAX )
       pp->step = min(0.05*sc->par.dt,pp->step);
+
     if ( pp->step == 0.0 ) {
       pp->flag = 0;
       return;
@@ -139,7 +145,7 @@ void computeTetraParticle(pScene sc,pMesh mesh,int k) {
 }
 
 
-int displayParticle(pScene sc,pMesh mesh) {
+int displayParticle(pScene sc,Mesh*mesh) {
   pParticle   pp;
   pStream     st;
   int         k;
@@ -156,11 +162,11 @@ int displayParticle(pScene sc,pMesh mesh) {
       drawParticle(sc,pp);
   }
 
-  return(1);
+  return 1;
 }
 
 
-int createParticle(pScene sc,pMesh mesh) {
+int createParticle(pScene sc,Mesh*mesh) {
   pParticle   pp;
   pStream     st;
   pMaterial   pm;
@@ -178,6 +184,7 @@ int createParticle(pScene sc,pMesh mesh) {
     if ( st->listp )  free(st->listp);
     free(sc->stream);
   }
+
   sc->stream     = createStream(sc,mesh);
   sc->par.cumtim = sc->par.timdep;
   sc->par.advtim = 0;
@@ -273,11 +280,11 @@ int createParticle(pScene sc,pMesh mesh) {
     }
   }
 
-  return(1);
+  return 1;
 }
 
 
-int advectParticle(pScene sc,pMesh mesh) {
+int advectParticle(pScene sc,Mesh*mesh) {
   pParticle   pp;
   pStream     st;
   pTetra      pt1;
@@ -362,6 +369,6 @@ int advectParticle(pScene sc,pMesh mesh) {
     }
   }
 
-  return(1);
+  return 1;
 }
 

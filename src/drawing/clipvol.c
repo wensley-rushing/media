@@ -5,7 +5,7 @@
 #define NBCOL    9
 
 /* build list for capping */
-GLuint capTetra(pMesh mesh) {
+GLuint capTetra(Mesh*mesh) {
   pScene     sc;
   pClip      clip;
   GLuint     dlist = 0;
@@ -152,7 +152,7 @@ GLuint capTetra(pMesh mesh) {
 
 
 /* build list for capping map */
-GLuint capTetraMap(pMesh mesh) {
+GLuint capTetraMap(Mesh*mesh) {
   pScene     sc;
   pClip      clip;
   GLuint     dlist = 0;
@@ -349,7 +349,7 @@ GLuint capTetraMap(pMesh mesh) {
 
 
 /* build list for capping isolines */
-GLuint capTetraIso(pMesh mesh) {
+GLuint capTetraIso(Mesh*mesh) {
   pScene     sc;
   pClip      clip;
   GLuint     dlist = 0;

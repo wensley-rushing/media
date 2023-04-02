@@ -1,10 +1,11 @@
 #include "medit.h"
+#include "image.h"
 #include "sproto.h"
 #include "extern.h"
 
 
 PPMimage *loadPPM(const char *imgname,int *type) {
-  pPPMimage  result;
+  PPMimage*  result;
   FILE      *fp;
   int        i,k,typimg,ret,r,g,b,s,maxval,bitsize;
   char      *ptr,c,buff[1024],data[256];
@@ -146,7 +147,7 @@ PPMimage *loadPPM(const char *imgname,int *type) {
 }
 
 
-int savePPM(const char *imgname,pPPMimage img,int typimg) {
+int savePPM(const char *imgname,PPMimage* img,int typimg) {
   FILE      *out;
   int        i,c,bitsize;
   char      *ptr,data[512];

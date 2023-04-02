@@ -4,17 +4,26 @@
  * Copyright (c) Inria, 1999-2007. All rights reserved. */
 
 #include "medit.h"
+#include "image.h"
+#include "chrono.h"
+#include "formats/formats.h"
 #include "compil.date"
 #ifdef ppc
-#include <unistd.h>
+#  include <unistd.h>
 #endif
+#include <signal.h>
+
+static int medit0(void);
+static int medit1(void);
+/* parsar.c */
+int    parsar(int argc,char *argv[]);
 
 
 /* global variables (see extern.h) */
 GLboolean hasStereo = 1;
 Canvas    cv;
 mytime    ctim[TIMEMAX];
-ubyte     ddebug,animate,saveimg,imgtype,infogl,fullscreen;
+ubyte     ddebug,animate,saveimg,infogl,fullscreen; // ,imgtype;
 ubyte     quiet,option,morphing,stereoMode;
 int       menu,amenu,fmenu,femenu,vmenu,mmenu,smenu;
 int       clmenu,cmenu,vwmenu,txmenu,trmenu;
@@ -22,7 +31,8 @@ int       animdep,animfin;
 
 
 static void excfun(int sigid) {
-  fprintf(stdout,"\n Unexpected error:");  fflush(stdout);
+  fprintf(stdout,"\n Program interrupted:");
+  fflush(stdout);
   switch(sigid) {
     case SIGABRT:
       fprintf(stdout,"  Abnormal stop\n");  break;
@@ -41,17 +51,17 @@ static void excfun(int sigid) {
 
 
 static void endcod() {
-  chrono(OFF,&ctim[0]);
-  fprintf(stdout,"\n Total running seconds:  %.2f\n",gttime(ctim[0]));
-  fprintf(stdout," Thank you for using Medit.\n");
+  // chrono(OFF,&ctim[0]);
+  // fprintf(stdout,"\n Total running seconds:  %.2f\n",gttime(ctim[0]));
+  // fprintf(stdout," Thank you for using Medit.\n");
 }
 
 
 static void grInfo(void) {
   GLboolean  b;
-  GLint      i,win;
+  GLint      i;
 
-  win = glutCreateWindow("Info");
+  glutCreateWindow("Info");
   fprintf(stdout,"Graphic info:\n");
   fprintf(stdout," GL Vendor:\t%s\n",glGetString(GL_VENDOR));
   fprintf(stdout," GL Version:\t%s\n",glGetString(GL_VERSION));
@@ -91,10 +101,11 @@ static void grInfo(void) {
 }
 
 
-int medit0() {
-  pMesh    mesh;
+static int
+medit0(void) {
+  Mesh*   mesh;
   char     data[1024],*name;
-  int      k,l,ret;
+  int      l,ret;
   clock_t  ct;
 
   /* default */
@@ -104,34 +115,36 @@ int medit0() {
   /* enter name */
   if ( !cv.nbm ) {
     fprintf(stdout,"  File name(s) missing. Please enter : ");
-    fflush(stdout); fflush(stdin);
+    fflush(stdout);
+    fflush(stdin);
+
     fgets(data,1020,stdin);
     if ( !strlen(data) ) {
       fprintf(stdout,"  ## No data\n");
-      return(0);
+      return 0;
     }
 
     /* parse file name(s) */
     name = strtok(data," \n");
     while( name ) {
       if ( !cv.mesh[cv.nbm] ) {
-        cv.mesh[cv.nbm] = (pMesh)M_calloc(1,sizeof(Mesh),"medit0.mesh");
-        if ( !cv.mesh[cv.nbm] )  return(0);
+        cv.mesh[cv.nbm] = (Mesh*)M_calloc(1,sizeof(Mesh),"medit0.mesh");
+        if ( !cv.mesh[cv.nbm] )  return 0;
       }
       /*(cv.mesh[cv.nbm])->name = calloc(strlen(name)+1,sizeof(char));*/
       strcpy(cv.mesh[cv.nbm]->name,name);
       name = strtok(NULL," \n\0");
       if ( ++cv.nbm == MAX_MESH )  break;
     }
-    if ( !cv.nbm ) return(0);
+    if ( !cv.nbm ) return 0;
   }
 
   /* read mesh(es) */
-  k = 0;
+  int k = 0;
   do {
     if ( !cv.mesh[k] ) {
       cv.mesh[k] = M_calloc(1,sizeof(Mesh),"medit0.mesh");
-      if ( !cv.mesh[k] )  return(0);
+      if ( !cv.mesh[k] )  return 0;
     }
     mesh = cv.mesh[k];
     mesh->typ = 0;
@@ -146,7 +159,7 @@ int medit0() {
     }
     if ( ret <= 0 ) {
       for (l=k+1; l<cv.nbm; l++)
-	    cv.mesh[l-1] = cv.mesh[l];
+      cv.mesh[l-1] = cv.mesh[l];
       cv.nbm--;
       k--;
       continue;
@@ -162,84 +175,84 @@ int medit0() {
       bbfile(mesh);
     if ( !quiet && mesh->nbb )
       fprintf(stdout,"    Solutions  %8d\n",mesh->nbb);
-  }
-  while ( ++k < cv.nbm );
+  } while ( ++k < cv.nbm );
+
   cv.nbs = cv.nbm;
 
   ct = difftime(clock(),ct);
   fprintf(stdout,"  Input seconds:     %.2f\n",
           (double)ct/(double)CLOCKS_PER_SEC);
 
-  return(cv.nbm);
+  return (cv.nbm);
 }
 
 
-int medit1() {
-  pScene   scene;
-  pMesh    mesh;
-  int      k;
+static int
+medit1(void) {
+  Scene   *scene;
+  Mesh    *mesh;
   clock_t  ct;
 
   /* create grafix */
   fprintf(stdout,"\n Building scene(s)\n");
   ct = clock();
-  for (k=0; k<cv.nbs; k++) {
+
+  for (int k=0; k<cv.nbs; k++) {
     if ( !cv.scene[k] ) {
-      cv.scene[k] = (pScene)M_calloc(1,sizeof(Scene),"medit1.scene");
-      if ( !cv.scene[k] )  return(0);
+      cv.scene[k] = (Scene*)M_calloc(1,sizeof(Scene),"medit1.scene");
+      if ( !cv.scene[k] )  return 0;
     }
     scene = cv.scene[k];
     if ( !cv.mesh[k] ) {
-      cv.mesh[k] = (pMesh)M_calloc(1,sizeof(Mesh),"medit1.mesh");
-      if ( !cv.mesh[k] )  return(0);
+      cv.mesh[k] = (Mesh*)M_calloc(1,sizeof(Mesh),"medit1.mesh");
+      if ( !cv.mesh[k] )  return 0;
     }
     mesh  = cv.mesh[k];
 
     fprintf(stdout,"  Creating scene %d\n",k+1);
-    parsop(scene,mesh);
-    meshRef(scene,mesh);
+    parsop(scene, mesh);
+    meshRef(scene, mesh);
     matSort(scene);
 
     if ( option == ISOSURF ) {
-	    if ( !mesh->nbb ) return(0);
+      if ( !mesh->nbb ) return 0;
       setupPalette(scene,mesh);
-	    tetraIsoPOVray(scene,mesh);
-	  }
+      tetraIsoPOVray(scene,mesh);
+    }
     else if ( !createScene(scene,k) ) {
       fprintf(stderr,"  ## Unable to create scene\n");
-      return(0);
+      return 0;
     }
   }
-  ct = difftime(clock(),ct);
+  ct = difftime(clock(), ct);
   fprintf(stdout,"  Scene seconds:     %.2f\n",(double)ct/(double)CLOCKS_PER_SEC);
 
-  return(1);
+  return 1;
 }
 
 
 int main(int argc,char *argv[]) {
-  int    type;
 
-  fprintf(stdout,"  -- Medit,  Release %s (%s)\n",ME_VER,ME_REL);
-  fprintf(stdout,"     %s.\n",ME_CPY);
-  fprintf(stdout,"     compiled: %s.\n\n",COMPIL);
+  fprintf(stderr,"  -- Medit,  Release %s (%s)\n",ME_VER,ME_REL);
+  fprintf(stderr,"     %s.\n", ME_CPY);
+  fprintf(stderr,"     compiled: %s.\n\n", COMPIL);
 
   /* trap exceptions */
   signal(SIGABRT,excfun);
-  signal(SIGFPE,excfun);
-  signal(SIGILL,excfun);
+  signal(SIGFPE, excfun);
+  signal(SIGILL, excfun);
   signal(SIGSEGV,excfun);
   signal(SIGTERM,excfun);
-  signal(SIGINT,excfun);
+  signal(SIGINT, excfun);
   atexit(endcod);
 
-  tminit(ctim,TIMEMAX);
-  chrono(ON,&ctim[0]);
+  // tminit(ctim,TIMEMAX);
+  // chrono(ON,&ctim[0]);
 
   /* default values */
   option     = STANDARD;
   saveimg    = GL_FALSE;
-  imgtype    = P6;
+  // imgtype    = P6;
   animate    = FALSE;
   morphing   = FALSE;
   fullscreen = FALSE;
@@ -256,18 +269,22 @@ int main(int argc,char *argv[]) {
   if ( option == ISOSURF ) {
     if ( !medit0() )  exit(1);
     if ( !medit1() )  exit(1);
-    return(0);
+    return 0;
   }
+
   glutInit(&argc,argv);
+
 #ifdef ppc
   chdir(pwd);
 #endif
 
-  chrono(ON,&ctim[0]);
+  // chrono(ON,&ctim[0]);
+  int type;
   if ( stereoMode == MONO )
     type = GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH;
   else
     type = GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_STEREO;
+
   glutInitDisplayMode(type);
   if ( infogl )  grInfo();
 
@@ -301,5 +318,5 @@ int main(int argc,char *argv[]) {
   glGetBooleanv(GL_STEREO,&hasStereo);
   glutMainLoop();
 
-  return(0);
+  return 0;
 }

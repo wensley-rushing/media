@@ -8,8 +8,8 @@ int     imstep,imreverse;
 
 int modeMorphing() {
   pScene   scene;
-  pMesh    mesh1,mesh2;
-  pPoint   ppt1,ppt2;
+  Mesh    *mesh1,*mesh2;
+  Point   *ppt1,*ppt2;
   int      k;
   clock_t  ct;
 
@@ -51,8 +51,8 @@ int modeMorphing() {
 }
 
 
-int morphMesh(pScene sc,pMesh mesh1) {
-  pMesh       mesh2;
+int morphMesh(pScene sc,Mesh*mesh1) {
+  Mesh*      mesh2;
   pPoint      ppt1,ppt2;
   int         k;
   static  float  dt = 1.0 / MAX_MORPH;

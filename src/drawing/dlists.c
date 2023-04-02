@@ -12,7 +12,7 @@ static float greencol[4] = {0.0, 0.6, 0.0, 1.0};
 
 
 /* build list of triangles */
-GLuint listTria(pScene sc,pMesh mesh) {
+GLuint listTria(pScene sc,Mesh*mesh) {
   pMaterial  pm;
   pTriangle  pt;
   pPoint     p0,p1,p2;
@@ -149,7 +149,7 @@ GLuint listTria(pScene sc,pMesh mesh) {
 }
 
 /* build list of triangles */
-GLuint listTriaP2(pScene sc,pMesh mesh) {
+GLuint listTriaP2(pScene sc,Mesh*mesh) {
   pMaterial  pm;
   pTriangle  pt;
   pPoint     p0,p1,p2;
@@ -286,7 +286,7 @@ GLuint listTriaP2(pScene sc,pMesh mesh) {
 }
 
 /* build list of quadrilaterals */
-GLuint listQuad(pScene sc,pMesh mesh) {
+GLuint listQuad(pScene sc,Mesh*mesh) {
   pMaterial  pm;
   pQuad      pq;
   pPoint     p0,p1,p2,p3;
@@ -513,7 +513,7 @@ GLuint listQuad(pScene sc,pMesh mesh) {
 
 
 /* build list of tetrahedra */
-GLuint listTetra(pScene sc,pMesh mesh,ubyte clip) {
+GLuint listTetra(pScene sc,Mesh*mesh,ubyte clip) {
   pMaterial  pm;
   pTetra     pt;
   pPoint     p0,p1,p2;
@@ -619,7 +619,7 @@ GLuint listTetra(pScene sc,pMesh mesh,ubyte clip) {
 
 
 /* build list of hexahedra */
-GLuint listHexa(pScene sc,pMesh mesh,ubyte clip) {
+GLuint listHexa(pScene sc,Mesh*mesh,ubyte clip) {
   pMaterial  pm;
   pHexa      ph;
   pPoint     p0,p1,p2,p3;

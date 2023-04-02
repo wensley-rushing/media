@@ -245,7 +245,7 @@ int coreps(FILE *file,GLsizei size,GLfloat *buffer) {
 }
 
 
-int sftcpy(pScene sc,pMesh mesh) {
+int sftcpy(pScene sc,Mesh*mesh) {
   FILE     *file;
   GLfloat  *fbbuffer;
   GLint     nvalues;

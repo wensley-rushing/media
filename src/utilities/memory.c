@@ -29,7 +29,7 @@ int M_memLeak() {
 
   for (i=1; i<=MAXMEM; i++)
     if (mstack[i].ptr)  c++;
-  return(c);
+  return c;
 }
 
 /* print out allocated pointers */
@@ -112,8 +112,8 @@ void *M_malloc(size_t size,char *call) {
     return(mstack[i].ptr);
   }
   else {
-    fprintf(stderr,"M_malloc: unable to store %10Zd bytes pointer. table full\n",(int)size);
-    return(0);
+    fprintf(stderr,"M_malloc: unable to store %10d bytes pointer. table full\n",(int)size);
+    return 0;
   }
 }
 
@@ -137,7 +137,7 @@ void *M_calloc(size_t nelem, size_t elsize,char *call) {
   /* store pointer, size */
   if ( stack < MAXMEM ) {
     mstack[cur].ptr  = calloc(nelem,elsize);
-    if ( !mstack[cur].ptr )  return(0);
+    if ( !mstack[cur].ptr )  return 0;
 
     /*assert(mstack[cur].ptr);*/
     mstack[cur].size = nelem * elsize;
@@ -154,8 +154,8 @@ void *M_calloc(size_t nelem, size_t elsize,char *call) {
     return(mstack[i].ptr);
   }
   else {
-    fprintf(stderr,"M_calloc: unable to allocate %10Zd bytes. table full\n",(int)(nelem*elsize));
-    return(0);
+    fprintf(stderr,"M_calloc: unable to allocate %10d bytes. table full\n",(int)(nelem*elsize));
+    return 0;
   }
 }
 
@@ -188,7 +188,7 @@ void *M_realloc(void *ptr, size_t size,char *call) {
 #ifdef MEMDEBUG
   fprintf(stderr,"M_realloc: pointer %p not found\n",ptr);
 #endif
-  return(0);
+  return 0;
 }
 
 /* Deallocates the space pointed to by ptr (a pointer to a block

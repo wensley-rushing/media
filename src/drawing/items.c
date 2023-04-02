@@ -4,7 +4,7 @@
 
 
 void drawRulers(pScene sc) {
-  pMesh  mesh = cv.mesh[sc->idmesh];
+  Mesh* mesh = cv.mesh[sc->idmesh];
   
   if ( ddebug ) printf("draw rulers\n");
   
@@ -15,32 +15,32 @@ void drawRulers(pScene sc) {
   glLineStipple(1,0x0444);
   glLineWidth(2.);
   glBegin(GL_LINES);
-    glVertex3f(mesh->xmin,mesh->ymin,mesh->zmin);
-    glVertex3f(mesh->xmax,mesh->ymin,mesh->zmin);
-    glVertex3f(mesh->xmin,mesh->ymax,mesh->zmin);
-    glVertex3f(mesh->xmax,mesh->ymax,mesh->zmin);
-    glVertex3f(mesh->xmin,mesh->ymin,mesh->zmin);
-    glVertex3f(mesh->xmin,mesh->ymax,mesh->zmin);
-    glVertex3f(mesh->xmax,mesh->ymin,mesh->zmin);
-    glVertex3f(mesh->xmax,mesh->ymax,mesh->zmin);
+  glVertex3f(mesh->xmin,mesh->ymin,mesh->zmin);
+  glVertex3f(mesh->xmax,mesh->ymin,mesh->zmin);
+  glVertex3f(mesh->xmin,mesh->ymax,mesh->zmin);
+  glVertex3f(mesh->xmax,mesh->ymax,mesh->zmin);
+  glVertex3f(mesh->xmin,mesh->ymin,mesh->zmin);
+  glVertex3f(mesh->xmin,mesh->ymax,mesh->zmin);
+  glVertex3f(mesh->xmax,mesh->ymin,mesh->zmin);
+  glVertex3f(mesh->xmax,mesh->ymax,mesh->zmin);
 
-    glVertex3f(mesh->xmin,mesh->ymin,mesh->zmax);
-    glVertex3f(mesh->xmax,mesh->ymin,mesh->zmax);
-    glVertex3f(mesh->xmin,mesh->ymax,mesh->zmax);
-    glVertex3f(mesh->xmax,mesh->ymax,mesh->zmax);
-    glVertex3f(mesh->xmin,mesh->ymin,mesh->zmax);
-    glVertex3f(mesh->xmin,mesh->ymax,mesh->zmax);
-    glVertex3f(mesh->xmax,mesh->ymin,mesh->zmax);
-    glVertex3f(mesh->xmax,mesh->ymax,mesh->zmax);
+  glVertex3f(mesh->xmin,mesh->ymin,mesh->zmax);
+  glVertex3f(mesh->xmax,mesh->ymin,mesh->zmax);
+  glVertex3f(mesh->xmin,mesh->ymax,mesh->zmax);
+  glVertex3f(mesh->xmax,mesh->ymax,mesh->zmax);
+  glVertex3f(mesh->xmin,mesh->ymin,mesh->zmax);
+  glVertex3f(mesh->xmin,mesh->ymax,mesh->zmax);
+  glVertex3f(mesh->xmax,mesh->ymin,mesh->zmax);
+  glVertex3f(mesh->xmax,mesh->ymax,mesh->zmax);
 
-    glVertex3f(mesh->xmin,mesh->ymin,mesh->zmin);
-    glVertex3f(mesh->xmin,mesh->ymin,mesh->zmax);
-    glVertex3f(mesh->xmin,mesh->ymax,mesh->zmin);
-    glVertex3f(mesh->xmin,mesh->ymax,mesh->zmax);
-    glVertex3f(mesh->xmax,mesh->ymin,mesh->zmin);
-    glVertex3f(mesh->xmax,mesh->ymin,mesh->zmax);
-    glVertex3f(mesh->xmax,mesh->ymax,mesh->zmin);
-    glVertex3f(mesh->xmax,mesh->ymax,mesh->zmax);
+  glVertex3f(mesh->xmin,mesh->ymin,mesh->zmin);
+  glVertex3f(mesh->xmin,mesh->ymin,mesh->zmax);
+  glVertex3f(mesh->xmin,mesh->ymax,mesh->zmin);
+  glVertex3f(mesh->xmin,mesh->ymax,mesh->zmax);
+  glVertex3f(mesh->xmax,mesh->ymin,mesh->zmin);
+  glVertex3f(mesh->xmax,mesh->ymin,mesh->zmax);
+  glVertex3f(mesh->xmax,mesh->ymax,mesh->zmin);
+  glVertex3f(mesh->xmax,mesh->ymax,mesh->zmax);
   glEnd();
   glLineWidth(1.);
   glDisable(GL_LINE_STIPPLE);
@@ -49,7 +49,7 @@ void drawRulers(pScene sc) {
 }
 
 void drawAxis(pScene sc,int dim) {
-  pMesh  mesh;
+  Mesh* mesh;
 
   /* default */
   if ( ddebug ) printf("draw axis\n");
@@ -62,6 +62,7 @@ void drawAxis(pScene sc,int dim) {
   glScalef(0.6*sc->dmin,0.6*sc->dmin,0.6*sc->dmin);
   glLineWidth(max(2,sc->par.linewidth));
   glColor3f(1.0,0.,0.);
+
   if ( mesh->dim == 2 ) {
     glBegin(GL_LINE_STRIP);
     glVertex2f(0.0, 0.0);
@@ -78,12 +79,14 @@ void drawAxis(pScene sc,int dim) {
     glVertex2f(0.0, 1.0);
     glEnd();
   
+#ifndef __EMSCRIPTEN__
     /*glColor3f(0.0f,1.0f,0.0f);*/
     glColor3f(1.-sc->par.back[0],1.0-sc->par.back[1],1.0-sc->par.back[2]);
     glRasterPos3f(1.02, 0.0, 0.0);
     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,'x');
     glRasterPos3f(0.0, 1.02, 0.0);
     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,'y');
+#endif
   }
   else {
     glBegin(GL_LINE_STRIP);
@@ -117,6 +120,7 @@ void drawAxis(pScene sc,int dim) {
     glVertex3f(0.0, 0.0, 1.0);
     glEnd();
     
+#ifndef __EMSCRIPTEN__
     /*glColor3f(0.0f,1.0f,0.0f);*/
     glColor3f(1.-sc->par.back[0],1.0-sc->par.back[1],1.0-sc->par.back[2]);
     glRasterPos3f(1.02, 0.0, 0.0);
@@ -125,6 +129,7 @@ void drawAxis(pScene sc,int dim) {
     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,'y');
     glRasterPos3f(0.0, 0.0, 1.02);
     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,'z');
+#endif
   }
   
   glLineWidth(1.0);
@@ -132,7 +137,7 @@ void drawAxis(pScene sc,int dim) {
 }
 
 
-void drawBox(pScene sc,pMesh mesh,int mode) {
+void drawBox(pScene sc,Mesh*mesh,int mode) {
   pMaterial  pm;
   float      cx,cy,cz;
   int        i,k,m;
@@ -169,7 +174,7 @@ void drawBox(pScene sc,pMesh mesh,int mode) {
 }
 
 
-void drawCube(pScene sc,pMesh mesh) {
+void drawCube(pScene sc,Mesh*mesh) {
   pTransform  cubetr;
   pCube       cube;
   float       x1,y1,z1,x2,y2,z2,xd,yd,zd;
@@ -228,7 +233,7 @@ void drawCube(pScene sc,pMesh mesh) {
 }
 
 
-void drawGrid(pScene sc,pMesh mesh) {
+void drawGrid(pScene sc,Mesh*mesh) {
   int k;
 
   /* default */
@@ -271,7 +276,7 @@ void drawGrid(pScene sc,pMesh mesh) {
 }
 
 
-void drawBase(pScene sc,pMesh mesh) {
+void drawBase(pScene sc,Mesh*mesh) {
   int  k;
 
   /* default */
@@ -313,7 +318,7 @@ void drawBase(pScene sc,pMesh mesh) {
 /* draw HUD system for flight */
 void drawHUD(pScene sc) {
   pCamera  c;
-  pMesh    mesh;
+  Mesh*   mesh;
   GLfloat  xm,ym,x,y,dx,dy,alt;
   double   azim,elev;
   int      i,j;

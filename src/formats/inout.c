@@ -4,7 +4,7 @@
 #include "eigenv.h"
 
 
-int loadMesh(pMesh mesh) {
+int loadMesh(Mesh*mesh) {
   pPoint      ppt;
   pEdge       pr;
   pTriangle   pt;
@@ -69,7 +69,7 @@ int loadMesh(pMesh mesh) {
   }
 
   /* memory allocation for mesh */
-  if ( !zaldy1(mesh) ) {
+  if ( !meshAlloc(mesh) ) {
     GmfCloseMesh(inm);
     return(-1);
   }
@@ -401,7 +401,7 @@ int loadMesh(pMesh mesh) {
 
 
 /*mark clipped elements */
-static int markPt(pMesh mesh) {
+static int markPt(Mesh*mesh) {
   pTriangle  pt;
   pQuad      pq;
   pPoint     ppt;
@@ -454,7 +454,7 @@ static int markPt(pMesh mesh) {
 
 
 /* save (part of) mesh to disk */
-int saveMesh(pScene sc,pMesh mesh,char *fileout,ubyte clipon) {
+int saveMesh(pScene sc,Mesh*mesh,char *fileout,ubyte clipon) {
   pPoint     ppt;
 	pEdge      pa;
   pTriangle  pt;
@@ -625,7 +625,7 @@ int saveMesh(pScene sc,pMesh mesh,char *fileout,ubyte clipon) {
 
 
 /* load solution (metric) */
-int loadSol(pMesh mesh,char *filename,int numsol) {
+int loadSol(Mesh*mesh,char *filename,int numsol) {
   pSolution    sol;
   double       dbuf[ GmfMaxTyp ];
   float        fbuf[ GmfMaxTyp ];
@@ -706,7 +706,7 @@ int loadSol(pMesh mesh,char *filename,int numsol) {
   mesh->nbb    = nel;
   mesh->bbmin  =  1.0e20;
   mesh->bbmax  = -1.0e20;
-  if ( !zaldy2(mesh) ) {
+  if ( !solnAlloc(mesh) ) {
     GmfCloseMesh(inm);
     return(0);
   }

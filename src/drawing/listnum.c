@@ -3,7 +3,7 @@
 #include "sproto.h"
 
 
-void updatePoints(pScene sc,pMesh mesh,int refmat) {
+void updatePoints(pScene sc,Mesh*mesh,int refmat) {
   pPoint    ppt;
   pTriangle pt;
   pQuad     pq;
@@ -77,7 +77,7 @@ void updatePoints(pScene sc,pMesh mesh,int refmat) {
   }
 }
 
-void listNum(pScene sc,pMesh mesh) {
+void listNum(pScene sc,Mesh*mesh) {
   pMaterial  pm;
   pPoint     ppt;
   pTriangle  pt;

@@ -1,6 +1,7 @@
 #include "medit.h"
 #include "extern.h"
 #include "sproto.h"
+#include "hash.h"
 
 
 static int ct[4][3] = { {0,1,2}, {0,3,1}, {1,3,2}, {0,2,3} };
@@ -157,7 +158,7 @@ void cutTriangle(pScene sc,triangle t) {
 
 /* metric map: use linear interpolation on values
    rather than color interpolation ! */
-GLuint listTriaMap(pScene sc,pMesh mesh) {
+GLuint listTriaMap(pScene sc,Mesh*mesh) {
   pMaterial  pm;
   pTriangle  pt;
   pPoint     p0,p1,p2;
@@ -376,7 +377,7 @@ GLuint listTriaMap(pScene sc,pMesh mesh) {
 
 
 /* build list of quadrilaterals */
-GLuint listQuadMap(pScene sc,pMesh mesh) {
+GLuint listQuadMap(pScene sc,Mesh*mesh) {
   pMaterial  pm;
   pQuad      pq;
   pPoint     p0,p1,p2,p3;
@@ -560,7 +561,7 @@ GLuint listQuadMap(pScene sc,pMesh mesh) {
 
 
 /* build list of tetrahedra */
-GLuint listTetraMap(pScene sc,pMesh mesh,ubyte clip) {
+GLuint listTetraMap(pScene sc,Mesh*mesh,ubyte clip) {
   pMaterial  pm;
   pTetra     pt;
   pPoint     p0,p1,p2;
@@ -670,7 +671,7 @@ GLuint listTetraMap(pScene sc,pMesh mesh,ubyte clip) {
 
 
 /* build list of hexahedra */
-GLuint listHexaMap(pScene sc,pMesh mesh,ubyte clip) {
+GLuint listHexaMap(pScene sc,Mesh*mesh,ubyte clip) {
   pMaterial  pm;
   pHexa      ph;
   pPoint     p0,p1,p2,p3;
@@ -790,7 +791,7 @@ GLuint listHexaMap(pScene sc,pMesh mesh,ubyte clip) {
 }
 
 
-GLuint alt2dList(pScene sc,pMesh mesh,int geomtype,float shrink,float altcoef) {
+GLuint alt2dList(pScene sc,Mesh*mesh,int geomtype,float shrink,float altcoef) {
   pTriangle  pt,pt1;
   pMaterial  pm;
   pQuad      pq;
@@ -1130,7 +1131,7 @@ GLuint alt2dList(pScene sc,pMesh mesh,int geomtype,float shrink,float altcoef) {
 
 
 /* setup color table */
-void setupPalette(pScene sc,pMesh mesh) {
+void setupPalette(pScene sc,Mesh*mesh) {
   double     delta;
   int        i;
 

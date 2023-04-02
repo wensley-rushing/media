@@ -90,7 +90,7 @@ void updateCamera(pScene sc,pCamera c,double azim,double elev) {
 
 pCamera initCamera(pScene sc,int up) {
   pCamera  c;
-  pMesh    mesh;
+  Mesh*   mesh;
   double   dd;
   double   look[3];
 

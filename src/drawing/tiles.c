@@ -1,4 +1,5 @@
 #include "medit.h"
+#include "formats/formats.h"
 #include "sproto.h"
 #include "extern.h"
 
